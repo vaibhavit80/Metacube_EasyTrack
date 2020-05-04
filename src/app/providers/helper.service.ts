@@ -15,7 +15,6 @@ export class HelperService {
       CarrierCode = '';
     }
     let trackingLength = TrackingNo.length;
-    //alert(trackingLength);
     switch (trackingLength)
     {
       case 9: // FedEx Freight

@@ -104,9 +104,12 @@ gotoScanner(){
    }
   }
   ionViewWillEnter() {
-    //this.track_Form.reset();
-    this.setfilteringDatestoSession();
-    this.splashScreen.hide();
+    if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
+    {
+    this.track_Form.reset();
+   }
+   this.setfilteringDatestoSession();
+   this.splashScreen.hide();
   }
   fillCarrierCode(formVal) {
  
