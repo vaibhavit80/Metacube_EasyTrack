@@ -51,9 +51,10 @@ errorMsg: string = '';
     this.trackService.logError(JSON.stringify(resultString),'BarCode Scanner');
   }
   onCamerasFound(devices: MediaDeviceInfo[]): void {
+    this.loading.dismiss();
     this.availableDevices = devices;
     this.hasDevices = Boolean(devices && devices.length);
-    this.loading.dismiss();
+    
   }
 
   onCodeResult(resultString: any) {
