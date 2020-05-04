@@ -37,6 +37,7 @@
     "@ionic-native/unique-device-id": "^5.14.0",
     "@ionic/angular": "^4.9.1",
     "@ionic/storage": "^2.2.0",
+    "@zxing/ngx-scanner": "^3.0.0",
     "angularfire2": "^5.2.1",
     "bootstrap": "^4.3.1",
     "cordova-android": "8.1.0",

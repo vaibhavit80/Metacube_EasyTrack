@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TrackingService } from 'src/services/tracking.service';
 import { NavController,Platform } from '@ionic/angular';
 import { QueryParams } from 'src/app/models/QueryParams';
@@ -27,13 +27,16 @@ export class HomePage implements OnInit {
   encodeData: any;
   scannedData: {};
   barcodeScannerOptions: BarcodeScannerOptions;
+  trackNo: string ='';
 
 // tslint:disable-next-line: max-line-length
-  constructor(platform: Platform,private splashScreen: SplashScreen, private barcodeScanner: BarcodeScanner,private router: Router
+  constructor(private route: ActivatedRoute,platform: Platform,private splashScreen: SplashScreen, private barcodeScanner: BarcodeScanner,private router: Router
     , public formBuilder: FormBuilder, public loadingController: LoaderService, public helper: HelperService,  private trackService: TrackingService , private navCtrl: NavController) {
 
   }
-
+gotoScanner(){
+  this.navCtrl.navigateForward(`/barcode-scanner`);
+}
   scanCode() {
     this.barcodeScannerOptions = {preferFrontCamera: false,
       showFlipCameraButton: true,
@@ -46,10 +49,10 @@ export class HomePage implements OnInit {
         if(barcodeData !== null){
           //alert(JSON.stringify(barcodeData));
           
-          let trackNo = barcodeData.text.replace('\u001d','');
-          this.carCode = this.helper.GetCarrierCode(trackNo);
+          this.trackNo = barcodeData.text.replace('\u001d','');
+          this.carCode = this.helper.GetCarrierCode(this.trackNo);
           this.track_Form = this.formBuilder.group({
-          TrackingNo: new FormControl(trackNo),
+          TrackingNo: new FormControl(this.trackNo),
           Carrier: new FormControl(this.carCode),
           Description: new FormControl('', Validators.max(250)),
           Res_Del : new FormControl(false)
@@ -79,12 +82,26 @@ export class HomePage implements OnInit {
     this.navCtrl.navigateForward(`/help`);
   }
   ngOnInit() {
+    this.trackNo = this.route.snapshot.paramMap.get('any');
+    if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
+   {
+    this.trackNo = this.trackNo.replace('\u001d','');
+    this.carCode = this.helper.GetCarrierCode(this.trackNo);
     this.track_Form = this.formBuilder.group({
-      TrackingNo: new FormControl('', Validators.required),
-      Carrier: new FormControl('U'),
-      Description: new FormControl(''),
-      Res_Del : new FormControl('true')
+    TrackingNo: new FormControl(this.trackNo),
+    Carrier: new FormControl(this.carCode),
+    Description: new FormControl('', Validators.max(250)),
+    Res_Del : new FormControl(false)
+  });
+   }
+   else{
+    this.track_Form = this.formBuilder.group({
+      TrackingNo: new FormControl(''),
+      Carrier: new FormControl(''),
+      Description: new FormControl('', Validators.max(250)),
+      Res_Del : new FormControl(false)
     });
+   }
   }
   ionViewWillEnter() {
     this.track_Form.reset();
