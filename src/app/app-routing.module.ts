@@ -8,6 +8,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   { path: 'home', loadChildren: './pages/home/home.module#HomePageModule' },
+  { path: 'home/:any', loadChildren: './pages/home/home.module#HomePageModule' },
   { path: 'details/:any', loadChildren: './pages/details/details.module#DetailsPageModule' },
   { path: 'active-packages', loadChildren: './pages/active-packages/active-packages.module#ActivePackagesPageModule' },
   { path: 'history', loadChildren: './pages/history/history.module#HistoryPageModule' },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'error', loadChildren: './pages/error/error.module#ErrorPageModule' },
   { path: 'edit-package/:any', loadChildren: './pages/edit-package/edit-package.module#EditPackagePageModule' },
   { path: 'show-map', loadChildren: './pages/show-map/show-map.module#ShowMapPageModule' },
-  { path: 'help', loadChildren: './pages/help/help.module#HelpPageModule' },  { path: 'barcode-scanner', loadChildren: './pages/barcode-scanner/barcode-scanner.module#BarcodeScannerPageModule' }
+  { path: 'help', loadChildren: './pages/help/help.module#HelpPageModule' },
+  { path: 'barcode-scanner', loadChildren: './pages/barcode-scanner/barcode-scanner.module#BarcodeScannerPageModule' }
 
 
 //   { path: 'tabs',

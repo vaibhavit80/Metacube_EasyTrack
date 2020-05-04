@@ -104,7 +104,7 @@ gotoScanner(){
    }
   }
   ionViewWillEnter() {
-    this.track_Form.reset();
+    //this.track_Form.reset();
     this.setfilteringDatestoSession();
     this.splashScreen.hide();
   }

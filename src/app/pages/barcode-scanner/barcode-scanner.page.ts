@@ -14,7 +14,7 @@ import { TrackingService } from 'src/services/tracking.service';
 export class BarcodeScannerPage implements OnInit {
 
   constructor(private route: ActivatedRoute, private trackService: TrackingService,private navCtrl: NavController, private loading: LoaderService) {
-    this.loading.present('Loading Map');
+    this.loading.present('Waiting for Camera..');
   }
  ngOnInit()    {
   // this.getLocations();
