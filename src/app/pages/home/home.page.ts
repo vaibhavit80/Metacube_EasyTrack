@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { TrackingService } from 'src/services/tracking.service';
 import { NavController,Platform } from '@ionic/angular';
 import { QueryParams } from 'src/app/models/QueryParams';
+import { ZBar, ZBarOptions } from '@ionic-native/zbar/ngx';
 import {
   BarcodeScannerOptions,
   BarcodeScanner
@@ -31,13 +32,15 @@ export class HomePage implements OnInit {
 
 // tslint:disable-next-line: max-line-length
   constructor(private route: ActivatedRoute,platform: Platform,private splashScreen: SplashScreen, private barcodeScanner: BarcodeScanner,private router: Router
-    , public formBuilder: FormBuilder, public loadingController: LoaderService, public helper: HelperService,  private trackService: TrackingService , private navCtrl: NavController) {
+    , public formBuilder: FormBuilder,private zbar: ZBar, public loadingController: LoaderService, public helper: HelperService,  private trackService: TrackingService , private navCtrl: NavController) {
 
   }
+
 gotoScanner(){
   this.navCtrl.navigateForward(`/barcode-scanner`);
 }
-  scanCode() {
+ // Phonegap Scanner
+  scanPGCode() {
     this.barcodeScannerOptions = {preferFrontCamera: false,
       showFlipCameraButton: true,
       showTorchButton: true,
@@ -77,15 +80,18 @@ gotoScanner(){
         this.loadingController.presentToast('Error', 'Something went wrong');
       });
   }
-
-  help(){
-    this.navCtrl.navigateForward(`/help`);
+ // Phonegap Scanner
+ scanzBarCode() {
+  let options: ZBarOptions = {
+    flash: 'off',
+    drawSight: true
   }
-  ngOnInit() {
-    this.trackNo = this.route.snapshot.paramMap.get('any');
-    if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
-   {
-    this.trackNo = this.trackNo.replace('\u001d','');
+this.zbar.scan(options)
+ .then(result => {
+  alert(JSON.stringify(result));
+  if(result !== null){
+    alert(JSON.stringify(result));
+    this.trackNo = result.text.replace('\u001d','');
     this.carCode = this.helper.GetCarrierCode(this.trackNo);
     this.track_Form = this.formBuilder.group({
     TrackingNo: new FormControl(this.trackNo),
@@ -93,21 +99,48 @@ gotoScanner(){
     Description: new FormControl('', Validators.max(250)),
     Res_Del : new FormControl(false)
   });
-   }
-   else{
+  this.trackService.logError(JSON.stringify(result),'Tracking No');
+ // 
+} else {
+  this.loadingController.presentToast('Warning', 'No Data Available');
+}
+ })
+ .catch(error => {
+  this.fillCarrierCode('');
+  this.trackService.logError(JSON.stringify(error),'barcode Scan issue');
+  this.loadingController.presentToast('Error', 'Something went wrong');
+ });
+}
+  help(){
+    this.navCtrl.navigateForward(`/help`);
+  }
+  ngOnInit() {
+  //   this.trackNo = this.route.snapshot.paramMap.get('any');
+  //   if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
+  //  {
+  //   this.trackNo = this.trackNo.replace('\u001d','');
+  //   this.carCode = this.helper.GetCarrierCode(this.trackNo);
+  //   this.track_Form = this.formBuilder.group({
+  //   TrackingNo: new FormControl(this.trackNo),
+  //   Carrier: new FormControl(this.carCode),
+  //   Description: new FormControl('', Validators.max(250)),
+  //   Res_Del : new FormControl(false)
+  // });
+  //  }
+  //  else{
     this.track_Form = this.formBuilder.group({
       TrackingNo: new FormControl(''),
       Carrier: new FormControl(''),
       Description: new FormControl('', Validators.max(250)),
       Res_Del : new FormControl(false)
     });
-   }
+  // }
   }
   ionViewWillEnter() {
-    if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
-    {
+    // if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
+    // {
     this.track_Form.reset();
-   }
+   //}
    this.setfilteringDatestoSession();
    this.splashScreen.hide();
   }

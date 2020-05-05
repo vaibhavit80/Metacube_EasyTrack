@@ -8,7 +8,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   { path: 'home', loadChildren: './pages/home/home.module#HomePageModule' },
-  { path: 'home/:any', loadChildren: './pages/home/home.module#HomePageModule' },
+  //{ path: 'home/:any', loadChildren: './pages/home/home.module#HomePageModule' },
   { path: 'details/:any', loadChildren: './pages/details/details.module#DetailsPageModule' },
   { path: 'active-packages', loadChildren: './pages/active-packages/active-packages.module#ActivePackagesPageModule' },
   { path: 'history', loadChildren: './pages/history/history.module#HistoryPageModule' },

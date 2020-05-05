@@ -18,6 +18,12 @@
 </ion-header>
 
 <ion-content>
+  <ng-container *ngIf="availableDevices">
+    <select (change)="onDeviceSelectChange($event.target.value)">
+      <option value="" [selected]="!currentDevice">No Device</option>
+      <option *ngFor="let device of availableDevices" [value]="device.deviceId" [selected]="currentDevice && device.deviceId === currentDevice.deviceId">{{ device.label }}</option>
+    </select>
+  </ng-container>
       <zxing-scanner [torch]="torchEnabled" [(device)]="currentDevice"
       (scanSuccess)="onCodeResult($event)"
       (scanError)="scanError($event)"
