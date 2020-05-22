@@ -12,7 +12,7 @@ export class HelperService {
     let CarrierCode = '';
     // Pattern patt = Pattern.compile('^[a-zA-Z]');
     if (TrackingNo  ===  '') {
-      CarrierCode = '';
+      return '';
     }
     let trackingLength = TrackingNo.length;
     switch (trackingLength)

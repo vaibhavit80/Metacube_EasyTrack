@@ -26,6 +26,7 @@ import { FcmService } from 'src/services/fcm.service';
 import { Network } from '@ionic-native/network/ngx';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { ZBar } from '@ionic-native/zbar/ngx';
 
 const config = {
   apiKey: "AIzaSyB-31B97WmwEKjgyOk731wuYFP2vjDDxI8",
@@ -62,6 +63,7 @@ driverOrder: ['indexeddb', 'sqlite', 'websql']
     SplashScreen,
     NativeGeocoder,
     Firebase,
+    ZBar,
     FcmService,
     Network,
     InAppBrowser,
