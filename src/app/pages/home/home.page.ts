@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TrackingService } from 'src/services/tracking.service';
-import { NavController,Platform, ModalController } from '@ionic/angular';
+import { NavController,Platform } from '@ionic/angular';
 import { QueryParams } from 'src/app/models/QueryParams';
 import { ZBar, ZBarOptions } from '@ionic-native/zbar/ngx';
 import {
@@ -32,18 +32,11 @@ export class HomePage implements OnInit {
   trackNo: string ='';
 
 // tslint:disable-next-line: max-line-length
-  constructor(private route: ActivatedRoute,platform: Platform,private splashScreen: SplashScreen, private barcodeScanner: BarcodeScanner,private router: Router
-    ,private storage: Storage,private modalController: ModalController, public formBuilder: FormBuilder,private zbar: ZBar, public loadingController: LoaderService, public helper: HelperService,  private trackService: TrackingService , private navCtrl: NavController) {
+  constructor(private route: ActivatedRoute,platform: Platform,private splashScreen: SplashScreen, 
+    private barcodeScanner: BarcodeScanner,private storage: Storage, 
+    public formBuilder: FormBuilder,private zbar: ZBar, public loadingController: LoaderService, 
+    public helper: HelperService,private trackService: TrackingService , private navCtrl: NavController) {
    
-  }
-  async open_modal() {
-    let modal;
-
-      modal = await this.modalController.create({
-        component: UrlChangerPage
-      });
-      this.clearTrack();
-    return await modal.present();
   }
 
 gotoScanner(){
@@ -164,7 +157,7 @@ this.zbar.scan(options)
   }
   fillCarrierCode(formVal) {
     if(formVal.TrackingNo === 'SHIPMATRIX'){
-      this.open_modal();
+      this.navCtrl.navigateForward(`/url-changer`);
     }else{
      this.carCode = this.helper.GetCarrierCode(formVal.TrackingNo);
      if(this.carCode === '' || this.carCode === undefined || this.carCode === null){

@@ -1,12 +1,12 @@
 <ion-header>
   <ion-toolbar color="tertiary">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" ios="ios-arrow-back"  md="md-arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title color="light">API Editor</ion-title>
-    <ion-buttons slot="end">
-      <ion-icon name="close" color="light" slot="icon-only" (click)="dismiss()" size="large"></ion-icon>
-    </ion-buttons>
+  
   </ion-toolbar>
 
 </ion-header>

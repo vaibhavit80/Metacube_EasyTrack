@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import {  NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { environment } from 'src/environments/environment';
 import { SessionData } from 'src/app/models/active-packages';
@@ -13,7 +13,8 @@ export class UrlChangerPage implements OnInit {
 
   apiType = '';
   apiUrl = '';
-  constructor(private modalController: ModalController,public loadingController: LoaderService, private storage: Storage) {
+  constructor(private navCtrl: NavController,public loadingController: LoaderService, private storage: Storage) {
+    debugger;
     this.apiType = SessionData.apiType;
     this.apiUrl = SessionData.apiURL;
     if(this.apiType === 'P'){
@@ -47,12 +48,12 @@ export class UrlChangerPage implements OnInit {
     SessionData.apiURL = this.apiUrl ; 
     SessionData.apiType = this.apiType; 
     this.loadingController.presentToast('alert', 'API url successfully updated.');
-    this.modalController.dismiss();
+    this.navCtrl.pop();
   }catch(Exception){
 
   }
   }
   dismiss() {
-    this.modalController.dismiss();
+    this.navCtrl.pop();
   }
 }
