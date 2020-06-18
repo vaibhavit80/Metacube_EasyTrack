@@ -182,7 +182,8 @@
       "cordova-plugin-cszbar": {}
     },
     "platforms": [
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

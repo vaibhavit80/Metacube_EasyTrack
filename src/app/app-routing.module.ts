@@ -17,7 +17,9 @@ const routes: Routes = [
   { path: 'edit-package/:any', loadChildren: './pages/edit-package/edit-package.module#EditPackagePageModule' },
   { path: 'show-map', loadChildren: './pages/show-map/show-map.module#ShowMapPageModule' },
   { path: 'help', loadChildren: './pages/help/help.module#HelpPageModule' },
-  { path: 'barcode-scanner', loadChildren: './pages/barcode-scanner/barcode-scanner.module#BarcodeScannerPageModule' }
+  { path: 'barcode-scanner', loadChildren: './pages/barcode-scanner/barcode-scanner.module#BarcodeScannerPageModule' },
+  { path: 'url-changer', loadChildren: './pages/url-changer/url-changer.module#UrlChangerPageModule' }
+
 
 
 //   { path: 'tabs',

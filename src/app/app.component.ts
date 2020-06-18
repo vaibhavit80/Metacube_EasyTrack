@@ -115,6 +115,7 @@ export class AppComponent {
   initializeApp() {
 
     this.platform.ready().then(() => {
+        if (this.platform.is('cordova')) {
       this.network.onDisconnect().subscribe(()=>
       {
         setTimeout(()=>
@@ -159,6 +160,7 @@ export class AppComponent {
      });
 
       this.notificationSetup();
+    }
     });
   }
   openUrl() {

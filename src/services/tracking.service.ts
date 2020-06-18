@@ -13,6 +13,7 @@ import { NavController} from '@ionic/angular';
 import { LoaderService } from 'src/app/providers/loader.service';
 import { Configuration } from 'src/app/models/configuration';
 import { ErrorDetails } from 'src/app/models/error';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 
 
 @Injectable({
@@ -22,7 +23,7 @@ export class TrackingService {
 // tslint:disable-next-line: variable-name
 
   private config:any;
-  constructor(private http: HttpClient,public loadingController: LoaderService, private storage: Storage, private navCtrl: NavController) {
+  constructor(private http: HttpClient, private uniqueDeviceID: UniqueDeviceID, public loadingController: LoaderService, private storage: Storage, private navCtrl: NavController) {
     }
     filterItems(items: any ,searchTerm) {
       return items.filter(item => {
@@ -154,7 +155,7 @@ export class TrackingService {
     }
   /// Edit package 
   editPackageDetails(packageDetails: EditPackage): Observable<any> {
-    return this.http.put(environment.api_Url + environment.savePreferances, packageDetails, {
+    return this.http.put(SessionData.apiURL + environment.savePreferances, packageDetails, {
       headers: new HttpHeaders()
       .set('Content-Type', 'application/json')
     });
@@ -183,38 +184,42 @@ export class TrackingService {
 
     }
     saveError(errorData:ErrorDetails): Observable<any> {
-      return this.http.put(environment.api_Url + environment.logErrorMessage , errorData, {
+      return this.http.put(SessionData.apiURL + environment.logErrorMessage , errorData, {
         headers: new HttpHeaders()
         .set('Content-Type', 'application/json')
       });
     }
    /// save Device Configuration
    saveDeviceConfiguration(configDetails: Configuration): Observable<any> {
-    return this.http.put(environment.api_Url + environment.saveConfiguration, configDetails, {
+    return this.http.put(SessionData.apiURL + environment.saveConfiguration, configDetails, {
       headers: new HttpHeaders()
       .set('Content-Type', 'application/json')
     });
   }
   /// Save device id
   saveDeviceID(gsmDetails: any): Observable<any> {
-    return this.http.put(environment.api_Url + environment.saveDeviceID, gsmDetails, {
+    return this.http.put(SessionData.apiURL + environment.saveDeviceID, gsmDetails, {
       headers: new HttpHeaders()
       .set('Content-Type', 'application/json')
     });
   }
  /// track package
 private trackPackages(_queryParam: QueryParams): Observable<any> {
-    let trackingAPI = environment.trackingAPI;
-    trackingAPI = trackingAPI.replace("@TrackingNo", _queryParam.TrackingNo);
-    trackingAPI = trackingAPI.replace("@Carrier", _queryParam.Carrier);
-    trackingAPI = trackingAPI.replace("@Residential", _queryParam.Residential);
-    trackingAPI = trackingAPI.replace("@Description", _queryParam.Description);
-    trackingAPI = trackingAPI.replace("@DeviceNo", uuid());
-    trackingAPI = trackingAPI.replace("@RegistrationId", uuid());
-    return this.http.post(environment.api_Url + trackingAPI, null, {
-      headers: new HttpHeaders()
-      .set('Content-Type', 'application/json')
-    });
+  let deviceid :any = '';
+  this.storage.get('deviceID').then(id => {
+    deviceid = id;
+  });
+  let trackingAPI = environment.trackingAPI;
+  trackingAPI = trackingAPI.replace("@TrackingNo", _queryParam.TrackingNo);
+  trackingAPI = trackingAPI.replace("@Carrier", _queryParam.Carrier);
+  trackingAPI = trackingAPI.replace("@Residential", _queryParam.Residential);
+  trackingAPI = trackingAPI.replace("@Description", _queryParam.Description);
+  trackingAPI = trackingAPI.replace("@DeviceNo", deviceid);
+  trackingAPI = trackingAPI.replace("@RegistrationId", uuid());
+  return this.http.post(SessionData.apiURL + trackingAPI, null, {
+    headers: new HttpHeaders()
+    .set('Content-Type', 'application/json')
+  });
 }
 /// set active package data in sessions
   setPackagestoSession(tData: any) {

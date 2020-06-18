@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { HomePage } from './home.page';
 import { SharedModule } from '../shared/shared.module';
+import { UrlChangerPage } from '../url-changer/url-changer.page';
 
 const routes: Routes = [
   {

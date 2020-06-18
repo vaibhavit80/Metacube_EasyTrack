@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="light">API Editor</ion-title>
+    <ion-buttons slot="end">
+      <ion-icon name="close" color="light" slot="icon-only" (click)="dismiss()" size="large"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+    <ion-item>
+      <ion-label position="floating">API Type</ion-label>
+      <ion-select [value]="apiType" [(ngModel)]="apiType" okText="Okay" (ionChange)="onTypeChange()" cancelText="Dismiss">
+        <ion-select-option value="P">Production Api Url</ion-select-option>
+        <ion-select-option value="B">Beta Api Url</ion-select-option>
+        <ion-select-option value="C">Custom Api Url</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" [(ngModel)]="apiUrl" placeholder="Enter API Url"></ion-input>
+      <ion-icon (click)="saveUrl()" style="cursor:pointer;" color="tertiary" name="create"></ion-icon>
+      </ion-item>
+
+</ion-content>

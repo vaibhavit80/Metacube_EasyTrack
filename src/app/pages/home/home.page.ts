@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TrackingService } from 'src/services/tracking.service';
-import { NavController,Platform } from '@ionic/angular';
+import { NavController,Platform, ModalController } from '@ionic/angular';
 import { QueryParams } from 'src/app/models/QueryParams';
 import { ZBar, ZBarOptions } from '@ionic-native/zbar/ngx';
 import {
@@ -14,7 +14,8 @@ import * as moment from 'moment';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { LoaderService } from 'src/app/providers/loader.service';
 import { HelperService } from 'src/app/providers/helper.service';
-
+import { UrlChangerPage } from '../url-changer/url-changer.page';
+import { Storage } from '@ionic/storage';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -32,8 +33,17 @@ export class HomePage implements OnInit {
 
 // tslint:disable-next-line: max-line-length
   constructor(private route: ActivatedRoute,platform: Platform,private splashScreen: SplashScreen, private barcodeScanner: BarcodeScanner,private router: Router
-    , public formBuilder: FormBuilder,private zbar: ZBar, public loadingController: LoaderService, public helper: HelperService,  private trackService: TrackingService , private navCtrl: NavController) {
+    ,private storage: Storage,private modalController: ModalController, public formBuilder: FormBuilder,private zbar: ZBar, public loadingController: LoaderService, public helper: HelperService,  private trackService: TrackingService , private navCtrl: NavController) {
+   
+  }
+  async open_modal() {
+    let modal;
 
+      modal = await this.modalController.create({
+        component: UrlChangerPage
+      });
+      this.clearTrack();
+    return await modal.present();
   }
 
 gotoScanner(){
@@ -46,10 +56,10 @@ gotoScanner(){
       showTorchButton: true,
       torchOn: false,
       prompt: 'Place a barcode inside the scan area'};
-    this.barcodeScanner
+      this.barcodeScanner
       .scan(this.barcodeScannerOptions)
       .then(barcodeData => {
-        if(barcodeData !== null){
+      if(barcodeData !== null){
           //alert(JSON.stringify(barcodeData));
           
           this.trackNo = barcodeData.text.replace('\u001d','');
@@ -128,6 +138,14 @@ this.zbar.scan(options)
   // });
   //  }
   //  else{
+      debugger;
+      this.storage.get('apiData').then(aData => {
+      if (aData !== null && aData !== undefined) {
+         SessionData.apiURL = aData.apiURL ; 
+         SessionData.apiType = aData.apiType; 
+        }
+      });
+   
     this.track_Form = this.formBuilder.group({
       TrackingNo: new FormControl(''),
       Carrier: new FormControl(''),
@@ -145,12 +163,15 @@ this.zbar.scan(options)
    this.splashScreen.hide();
   }
   fillCarrierCode(formVal) {
- 
+    if(formVal.TrackingNo === 'SHIPMATRIX'){
+      this.open_modal();
+    }else{
      this.carCode = this.helper.GetCarrierCode(formVal.TrackingNo);
      if(this.carCode === '' || this.carCode === undefined || this.carCode === null){
        this.loadingController.presentToast('Error','Invalid Packages.');
        this.clearTrack();
      }
+    }
   }
   doTrack(value) {
     try {

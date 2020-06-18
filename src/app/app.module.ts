@@ -27,6 +27,8 @@ import { Network } from '@ionic-native/network/ngx';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ZBar } from '@ionic-native/zbar/ngx';
+import { UrlChangerPage } from './pages/url-changer/url-changer.page';
+import { UrlChangerPageModule } from './pages/url-changer/url-changer.module';
 
 const config = {
   apiKey: "AIzaSyB-31B97WmwEKjgyOk731wuYFP2vjDDxI8",
@@ -46,13 +48,14 @@ export class ZendeskConfig extends ngxZendeskWebwidgetConfig{
 }
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [PopoverDetailPage],
+  entryComponents: [PopoverDetailPage,UrlChangerPage],
   imports: [
     HttpClientModule,
     BrowserModule,
     IonicModule.forRoot(),
     ngxZendeskWebwidgetModule.forRoot(ZendeskConfig),
     PopoverDetailPageModule,
+    UrlChangerPageModule,
     AngularFireModule.initializeApp(config),
     AngularFirestoreModule,
     AppRoutingModule, SharedModule, IonicStorageModule.forRoot({
