@@ -55,48 +55,58 @@ export class TrackingService {
     }
     /// get Tracking details for package
   getTrackingDetails(queryParam: QueryParams, nav: string = 'det') {
-    this.loadingController.present('Tracking package....');
-    this.trackPackages(queryParam).subscribe(data => {
-      // tslint:disable-next-line: no-debugger
-      if (data.Error === true) {
-        console.log('Error = ' +  data.Message);
-        this.loadingController.dismiss();
-        this.loadingController.presentToast('Error', 'Invalid Response.');
-        return false;
+
+    this.storage.get('deviceID').then(id => {
+      if(id !== '' && id !== null && id !== undefined ){
+            queryParam.DeviceNo = id;
+            this.loadingController.present('Tracking package....');
+            this.trackPackages(queryParam).subscribe(data => {
+            // tslint:disable-next-line: no-debugger
+            if (data.Error === true) {
+              console.log('Error = ' +  data.Message);
+              this.loadingController.dismiss();
+              this.loadingController.presentToast('Error', 'Invalid Response.');
+              return false;
+            }
+            // Tracking Response
+            this.storage.get('_activePackages').then(tData => {
+                if (tData == null) {tData = []; }
+                // tslint:disable-next-line: max-line-length
+                const index = tData.findIndex(item => item.trackingNo === queryParam.TrackingNo.trim() + '-' + queryParam.Carrier.trim());
+                if (index >= 0) {tData.splice(index, 1); }
+                const record: any = data.objResponse;
+                record.trackingNo = queryParam.TrackingNo.trim() + '-' + queryParam.Carrier.trim();
+                record.ResultData.Description = queryParam.Description;
+                record.ResultData.Residential = queryParam.Residential;
+                tData.push(record);
+                this.storage.set('_activePackages', tData);
+                this.loadingController.dismiss();
+                switch(nav) {
+                  case 'actpck':
+                      this.navCtrl.navigateForward(`/active-packages`);
+                      break;
+                      case 'det':
+                        this.navCtrl.navigateForward(`/details/${record.trackingNo}`);
+                        break;
+                }
+              });
+          },
+          error => {
+            this.loadingController.dismiss();
+            throw new Error('Error occurred.');
+          });
+      } else {
+        this.loadingController.presentToast('alert','Invalid Request');
       }
-      // Tracking Response
-      this.storage.get('_activePackages').then(tData => {
-          if (tData == null) {tData = []; }
-          // tslint:disable-next-line: max-line-length
-          const index = tData.findIndex(item => item.trackingNo === queryParam.TrackingNo.trim() + '-' + queryParam.Carrier.trim());
-          if (index >= 0) {tData.splice(index, 1); }
-          const record: any = data.objResponse;
-          record.trackingNo = queryParam.TrackingNo.trim() + '-' + queryParam.Carrier.trim();
-          record.ResultData.Description = queryParam.Description;
-          record.ResultData.Residential = queryParam.Residential;
-          tData.push(record);
-          this.storage.set('_activePackages', tData);
-          this.loadingController.dismiss();
-          switch(nav) {
-            case 'actpck':
-                this.navCtrl.navigateForward(`/active-packages`);
-                break;
-                case 'det':
-                  this.navCtrl.navigateForward(`/details/${record.trackingNo}`);
-                  break;
-          }
-        });
-    },
-    error => {
-      this.loadingController.dismiss();
-      console.log('Error = ' + JSON.stringify(error));
-      throw new Error('Error occurred.');
     });
+    
   }
 
 
      /// refresh for all package
    refreshTrackingDetails(arrayPackage: Array<ActivePackages>) {
+    this.storage.get('deviceID').then(id => {
+      if(id !== '' && id !== null && id !== undefined ){
     this.loadingController.presentToast('alert', 'Retracking active packages.');
     let isSuccess: number = 0;
     let i: number = 1;
@@ -106,8 +116,9 @@ export class TrackingService {
         const queryParam = new QueryParams();
         queryParam.TrackingNo = element.TrackingNo;
         queryParam.Carrier = element.Carrier;
+        queryParam.DeviceNo = id;
         queryParam.Description = '';
-        queryParam.Residential = '';
+        queryParam.Residential = 'false';
         this.trackPackages(queryParam).subscribe(data => {
           // tslint:disable-next-line: no-debugger
           if (data.Error === true) {
@@ -152,7 +163,11 @@ export class TrackingService {
         }else{i++;}
       }
       });
+    } else {
+      this.loadingController.presentToast('alert','Invalid Request');
     }
+  });
+}
   /// Edit package 
   editPackageDetails(packageDetails: EditPackage): Observable<any> {
     return this.http.put(SessionData.apiURL + environment.savePreferances, packageDetails, {
@@ -205,16 +220,13 @@ export class TrackingService {
   }
  /// track package
 private trackPackages(_queryParam: QueryParams): Observable<any> {
-  let deviceid :any = '';
-  this.storage.get('deviceID').then(id => {
-    deviceid = id;
-  });
+
   let trackingAPI = environment.trackingAPI;
   trackingAPI = trackingAPI.replace("@TrackingNo", _queryParam.TrackingNo);
   trackingAPI = trackingAPI.replace("@Carrier", _queryParam.Carrier);
-  trackingAPI = trackingAPI.replace("@Residential", _queryParam.Residential);
-  trackingAPI = trackingAPI.replace("@Description", _queryParam.Description);
-  trackingAPI = trackingAPI.replace("@DeviceNo", deviceid);
+  trackingAPI = trackingAPI.replace("@Residential", _queryParam.Residential === null || _queryParam.Residential === '' || _queryParam.Residential === undefined ? 'false' : _queryParam.Residential );
+  trackingAPI = trackingAPI.replace("@Description", _queryParam.Description === null || _queryParam.Description === undefined ? '' : _queryParam.Description );
+  trackingAPI = trackingAPI.replace("@DeviceNo", _queryParam.DeviceNo);
   trackingAPI = trackingAPI.replace("@RegistrationId", uuid());
   return this.http.post(SessionData.apiURL + trackingAPI, null, {
     headers: new HttpHeaders()

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   api_Url_Prod: 'https://demo.easytrackapp.com/smtrackingapi/api/',
-  api_Url_Beta: 'https://10.1.10.46/smtrackingapi/api/',
+  api_Url_Beta: 'http://10.1.10.46/smtrackingapi/api/',
   savePreferances: 'SavePreferences',
   saveConfiguration: 'SaveConfigure',
   logErrorMessage: 'LogErrorMessage',

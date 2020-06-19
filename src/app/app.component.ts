@@ -130,36 +130,30 @@ export class AppComponent {
           this.loadingController.presentToast('dark', 'Internet is Now Connected');
         }, 2000);
       });
-
       this.statusBar.backgroundColorByHexString('#7606a7');
-      this.storage.get('first_time').then((val) => {
-        if (val === 'done') {
-           console.log('device id already saved');
-        } else {
-              this.storage.get('deviceID').then(id => {
-                  if (id === null || id === undefined || id === '') {
-                   this.uniqueDeviceID.get()
-                  .then((uid: any) => {
-                    
-                    const gsmDetails = {
-                      DeviceId: uid,
-                      RegistrationId: uuid()
-                    };
-                    this.trackService.saveDeviceID(gsmDetails).subscribe(data => {
-                      this.storage.set('deviceID', uid);
-                      this.storage.set('first_time', 'done');
-                    },
-                    error => {
-                      this.trackService.logError('Error - ' + error, 'saveDeviceID');
-                    });
-                })
-                  .catch((error: any) => this.trackService.logError('Error - ' + JSON.stringify(error), 'saveDeviceID'));
-                }
-            });
-        }
-     });
-
+      this.storage.get('deviceID').then(id => {
+            if (id === null || id === undefined || id === '') {
+              this.uniqueDeviceID.get()
+            .then((uid: any) => {
+              
+              const gsmDetails = {
+                DeviceId: uid,
+                RegistrationId: uuid()
+              };
+              this.trackService.saveDeviceID(gsmDetails).subscribe(data => {
+                this.storage.set('deviceID', uid);
+                this.storage.set('first_time', 'done');
+              },
+              error => {
+                this.trackService.logError('Error - ' + error, 'saveDeviceID');
+              });
+          })
+            .catch((error: any) => this.trackService.logError('Error - ' + JSON.stringify(error), 'saveDeviceID'));
+          }
+      });
       this.notificationSetup();
+    }else{
+      this.storage.set('deviceID', '12345');
     }
     });
   }

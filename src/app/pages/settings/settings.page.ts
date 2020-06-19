@@ -56,7 +56,7 @@ export class SettingsPage implements OnInit {
           });
         } else {
           this.loadingController.presentToast('Error', 'No device id found.');
-          return;
+          this.loadingController.dismiss();
         }
       });
 

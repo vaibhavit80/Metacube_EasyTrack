@@ -6,14 +6,18 @@
         </ion-button>
         
     </ion-buttons>
-    <ion-title>Details</ion-title>
+    <!-- <ion-title>Detail</ion-title> -->
     <ion-buttons slot="end">
+      <ion-button title="Edit Package" *ngIf="isActive == true" (click)="editPackages()">
+        <ion-icon name="create"></ion-icon>
+      </ion-button>
         <ion-button title="Refresh Package" *ngIf="isActive == true" (click)="refPackages()">
             <ion-icon name="refresh"></ion-icon>      
         </ion-button>
-        <ion-button title="Edit Package" *ngIf="isActive == true" (click)="editPackages()">
-            <ion-icon name="create"></ion-icon>
-          </ion-button>
+        <ion-button title="Share" *ngIf="isActive == true" (click)="share()">
+          <app-social-sharing [Key]="item"></app-social-sharing>     
+      </ion-button>
+
           <ion-button size="small" title="More Options" (click)="presentPopover($event)">
             <ion-icon name="more"></ion-icon>
           </ion-button>

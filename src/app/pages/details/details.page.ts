@@ -250,6 +250,7 @@ export class DetailsPage implements OnInit {
                               });
                             break;
                             case 'rtrck':
+                             // this.loading.present('Re-Tracking...');
                               this.storage.get('_archivePackages').then(tData => {
                                   if (tData == null) {
                                   tData = []; }

@@ -133,16 +133,17 @@ export class ActivePackagesPage implements OnInit {
     }
   }
 
-archive(key: string) {
- this.presentConfirm(key, 'Archive', 'Do you want to archive the package?', 'arc');
-}
-retrack(key: string) {
-  this.presentConfirm(key, 'Re-Track', 'Do you want to Re-Track the package?', 'rtrck');
- }
+  archive(key: string) {
+  this.presentConfirm(key, 'Archive', 'Do you want to archive the package?', 'arc');
+  }
+  
+  retrack(key: string) {
+    this.presentConfirm(key, 'Re-Track', 'Do you want to Re-Track the package?', 'rtrck');
+  }
 
- share() {
-  this.social.presentActionSheet();
- }
+  share() {
+    this.social.presentActionSheet();
+  }
 
 delete(key: string) {
   this.presentConfirm(key, 'Delete', 'Do you want to delete the package?', 'del');
@@ -257,7 +258,7 @@ async presentConfirm(key: string ,_header: string, _message: string, _opration: 
                               queryParam.TrackingNo = record[0];
                               queryParam.Carrier = record[1];
                               queryParam.Description = '';
-                              queryParam.Residential = '';
+                              queryParam.Residential = 'false';
                               this.trackService.getTrackingDetails(queryParam);
                             } else {
                               this.loading.presentToast('error', 'Invalid Packages to retract.');

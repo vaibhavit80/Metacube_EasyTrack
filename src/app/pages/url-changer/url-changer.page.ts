@@ -15,6 +15,13 @@ export class UrlChangerPage implements OnInit {
   apiUrl = '';
   constructor(private navCtrl: NavController,public loadingController: LoaderService, private storage: Storage) {
     debugger;
+    this.storage.get('deviceID').then(id => {
+      if (id !== null && id !== undefined && id !== '') {
+        this.loadingController.presentToast('alert', 'DeviceId - '+ id);
+      } else {
+        this.loadingController.presentToast('alert', 'No DeviceId Available');
+      }
+    });
     this.apiType = SessionData.apiType;
     this.apiUrl = SessionData.apiURL;
     if(this.apiType === 'P'){
