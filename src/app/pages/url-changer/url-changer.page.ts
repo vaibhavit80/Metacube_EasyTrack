@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { environment } from 'src/environments/environment';
 import { SessionData } from 'src/app/models/active-packages';
 import { LoaderService } from 'src/app/providers/loader.service';
+import { TrackingService } from 'src/services/tracking.service';
 @Component({
   selector: 'app-url-changer',
   templateUrl: './url-changer.page.html',
@@ -13,7 +14,7 @@ export class UrlChangerPage implements OnInit {
 
   apiType = '';
   apiUrl = '';
-  constructor(private navCtrl: NavController,public loadingController: LoaderService, private storage: Storage) {
+  constructor(private navCtrl: NavController,private trackService: TrackingService,public loadingController: LoaderService, private storage: Storage) {
     debugger;
     this.storage.get('deviceID').then(id => {
       if (id !== null && id !== undefined && id !== '') {
@@ -54,6 +55,7 @@ export class UrlChangerPage implements OnInit {
     });
     SessionData.apiURL = this.apiUrl ; 
     SessionData.apiType = this.apiType; 
+    this.trackService.GenerateDeviceID();
     this.loadingController.presentToast('alert', 'API url successfully updated.');
     this.navCtrl.pop();
   }catch(Exception){

@@ -132,25 +132,11 @@ export class AppComponent {
       });
       this.statusBar.backgroundColorByHexString('#7606a7');
       this.storage.get('deviceID').then(id => {
-            if (id === null || id === undefined || id === '') {
-              this.uniqueDeviceID.get()
-            .then((uid: any) => {
-              
-              const gsmDetails = {
-                DeviceId: uid,
-                RegistrationId: uuid()
-              };
-              this.trackService.saveDeviceID(gsmDetails).subscribe(data => {
-                this.storage.set('deviceID', uid);
-                this.storage.set('first_time', 'done');
-              },
-              error => {
-                this.trackService.logError('Error - ' + error, 'saveDeviceID');
-              });
-          })
-            .catch((error: any) => this.trackService.logError('Error - ' + JSON.stringify(error), 'saveDeviceID'));
+          if (id === null || id === undefined || id === '') {
+             this.trackService.GenerateDeviceID();
           }
-      });
+       });
+
       this.notificationSetup();
     }else{
       this.storage.set('deviceID', '12345');

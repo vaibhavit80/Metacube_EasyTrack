@@ -198,6 +198,24 @@ export class TrackingService {
       );
 
     }
+    GenerateDeviceID()
+    {
+      this.uniqueDeviceID.get().then((uid: any) => {
+            
+        const gsmDetails = {
+          DeviceId: uid,
+          RegistrationId: uuid()
+        };
+        this.saveDeviceID(gsmDetails).subscribe(data => {
+          this.storage.set('deviceID', uid);
+          this.storage.set('first_time', 'done');
+        },
+        error => {
+          this.logError('Error - ' + error, 'saveDeviceID');
+        });
+    }).catch((error: any) => this.logError('Error - ' + JSON.stringify(error), 'saveDeviceID'));
+
+    }
     saveError(errorData:ErrorDetails): Observable<any> {
       return this.http.put(SessionData.apiURL + environment.logErrorMessage , errorData, {
         headers: new HttpHeaders()
