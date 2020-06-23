@@ -73,7 +73,7 @@ export class AppComponent {
   private notificationSetup() {
     this.fcm.getToken();
     this.fcm.onNotifications().subscribe(msg => {
-        console.log('');
+        //console.log(msg);
           if (this.platform.is('ios')) {
             let notification : string;
             notification = msg.aps.alert.body;
