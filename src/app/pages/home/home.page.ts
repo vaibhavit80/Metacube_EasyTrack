@@ -118,34 +118,33 @@ this.zbar.scan(options)
     this.navCtrl.navigateForward(`/help`);
   }
   ngOnInit() {
-  //   this.trackNo = this.route.snapshot.paramMap.get('any');
-  //   if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
-  //  {
-  //   this.trackNo = this.trackNo.replace('\u001d','');
-  //   this.carCode = this.helper.GetCarrierCode(this.trackNo);
-  //   this.track_Form = this.formBuilder.group({
-  //   TrackingNo: new FormControl(this.trackNo),
-  //   Carrier: new FormControl(this.carCode),
-  //   Description: new FormControl('', Validators.max(250)),
-  //   Res_Del : new FormControl(false)
-  // });
-  //  }
-  //  else{
-      debugger;
-      this.storage.get('apiData').then(aData => {
+    this.storage.get('apiData').then(aData => {
       if (aData !== null && aData !== undefined) {
          SessionData.apiURL = aData.apiURL ; 
          SessionData.apiType = aData.apiType; 
         }
       });
    
+   this.trackNo = localStorage.getItem("intent");
+   if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
+   {
+    this.trackNo = this.trackNo.replace('\u001d','');
+    this.carCode = this.helper.GetCarrierCode(this.trackNo);
+    this.track_Form = this.formBuilder.group({
+    TrackingNo: new FormControl(this.trackNo),
+    Carrier: new FormControl(this.carCode),
+    Description: new FormControl('', Validators.max(250)),
+    Res_Del : new FormControl(false)
+  });
+   }
+   else{ 
     this.track_Form = this.formBuilder.group({
       TrackingNo: new FormControl(''),
       Carrier: new FormControl(''),
       Description: new FormControl('', Validators.max(250)),
       Res_Del : new FormControl(false)
     });
-  // }
+   }
   }
   ionViewWillEnter() {
     // if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
