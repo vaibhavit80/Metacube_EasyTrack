@@ -126,8 +126,11 @@ this.zbar.scan(options)
       });
    
    this.trackNo = localStorage.getItem("intent");
+   //alert(this.trackNo);
    if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
    {
+//alert(this.trackNo);
+localStorage.setItem("intent", '');
     this.trackNo = this.trackNo.replace('\u001d','');
     this.carCode = this.helper.GetCarrierCode(this.trackNo);
     this.track_Form = this.formBuilder.group({
@@ -136,6 +139,7 @@ this.zbar.scan(options)
     Description: new FormControl('', Validators.max(250)),
     Res_Del : new FormControl(false)
   });
+ // alert('end' + this.trackNo);
    }
    else{ 
     this.track_Form = this.formBuilder.group({
@@ -146,10 +150,11 @@ this.zbar.scan(options)
     });
    }
   }
-  ionViewWillEnter() {
+  ionViewWillEnter() { 
+
     // if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
     // {
-    this.track_Form.reset();
+    //this.track_Form.reset();
    //}
    this.setfilteringDatestoSession();
    this.splashScreen.hide();

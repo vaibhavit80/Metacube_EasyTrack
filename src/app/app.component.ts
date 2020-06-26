@@ -115,7 +115,7 @@ export class AppComponent {
   initializeApp() {
 
     this.platform.ready().then(() => {
-        if (this.platform.is('cordova')) {
+      if (this.platform.is('cordova')) {
       this.network.onDisconnect().subscribe(()=>
       {
         setTimeout(()=>

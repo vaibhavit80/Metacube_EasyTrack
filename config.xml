@@ -98,5 +98,9 @@
     <plugin name="cordova-plugin-firebase" spec="2.0.5" />
     <plugin name="cordova-plugin-network-information" spec="2.0.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="3.1.0" />
+    <plugin name="cordova-plugin-openwith-ios" spec="^2.0.0">
+        <variable name="IOS_URL_SCHEME" value="oaisheasytrack" />
+    </plugin>
     <engine name="ios" spec="4.5.5" />
+    <engine name="android" spec="8.1.0" />
 </widget>

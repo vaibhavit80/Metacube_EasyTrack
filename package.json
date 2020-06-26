@@ -56,6 +56,7 @@
     "cordova-plugin-inappbrowser": "^3.1.0",
     "cordova-plugin-nativegeocoder": "^3.2.2",
     "cordova-plugin-network-information": "^2.0.2",
+    "cordova-plugin-openwith-ios": "^2.0.0",
     "cordova-plugin-uniquedeviceid": "^1.3.2",
     "cordova-plugin-x-socialsharing": "^5.4.7",
     "cordova-sqlite-storage": "^3.2.0",
@@ -179,7 +180,10 @@
       "cordova-plugin-network-information": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-geolocation": {},
-      "cordova-plugin-cszbar": {}
+      "cordova-plugin-cszbar": {},
+      "cordova-plugin-openwith-ios": {
+        "IOS_URL_SCHEME": "oaisheasytrack"
+      }
     },
     "platforms": [
       "ios",
