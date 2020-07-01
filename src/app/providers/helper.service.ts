@@ -15,7 +15,14 @@ export class HelperService {
       CarrierCode = '';
       return '';
     }
+
+
+     
+     
     let trackingLength = TrackingNo.length;
+    //logic for Ontrac
+
+   
     switch (trackingLength)
     {
       case 9: // FedEx Freight
@@ -25,12 +32,21 @@ export class HelperService {
             let check = this.CheckFXXCheckDigit(TrackingNo);
             if (check === true) {
           CarrierCode = 'F';
+        }else if(TrackingNo.match('[B]\d\d\d\d\d\d\d\d\d\d\d') || TrackingNo.match('[C]\d\d\d\d\d\d\d\d\d\d\d\d\d\d') || TrackingNo.match('[D]\d\d\d\d\d\d\d\d\d\d\d\d\d\d'))
+        {
+          CarrierCode =  "O";
         } else {
           CarrierCode = 'P';
         }
             break;
       case 15: // FedEx Ground
-        CarrierCode = 'R';
+      if(TrackingNo.match('[B]\d\d\d\d\d\d\d\d\d\d\d') || TrackingNo.match('[C]\d\d\d\d\d\d\d\d\d\d\d\d\d\d') || TrackingNo.match('[D]\d\d\d\d\d\d\d\d\d\d\d\d\d\d'))
+        {
+          CarrierCode =  "O";
+        } else {
+          CarrierCode = 'R';
+        }
+       // CarrierCode = 'R';
         break;
       case 18: // UPS
       if (TrackingNo.substring(0, 2).toUpperCase()  ===  "1Z" && this.UPS_CheckDigit(TrackingNo)) {
@@ -50,11 +66,11 @@ export class HelperService {
         CarrierCode = 'R';
         break;
       case 10: // DHL
-  //      if (CheckDHLCheckDigit(TrackingNo)) {
+       if (this.CheckDHLCheckDigit(TrackingNo)) {
           CarrierCode = 'D';
-  //      } else {
-  //        CarrierCode = 'P';
-  //      }
+       } else {
+         CarrierCode = 'P';
+       }
           break;
       case 13: // DHL
         if (TrackingNo.match('[a-zA-Z][a-zA-Z][0-9]{9}[a-zA-Z][a-zA-Z]')) {
@@ -202,7 +218,35 @@ export class HelperService {
       }
       return ServiceType;
     }
+     CheckDHLCheckDigit(TrackingNo : any):boolean
+    {
+        try
+        {
+           let sum: number;
+           let rem: number;
+            let trno: number;
+             let div: number;
+            if (div.toString().indexOf('.') > 0)
+            {
+                div = parseFloat(div.toString().substring(div.toString().indexOf('.'), 2));
+            } else{div;}
 
+            //div = Math.DivRem(trno, 7, out trno);
+            div *= 7;
+            rem = Math.ceil(div);
+            if (rem.toString() == TrackingNo[9].ToString()){
+               return true;
+            }
+            else{
+             return false;
+            }
+            
+        }
+        catch
+        {
+          return false;
+        }
+    }
 //  GetServiceType(TrackingNo) {
 //       let CarrierCode = GetCarrierCode(TrackingNo);
 //       let ServiceType = '';

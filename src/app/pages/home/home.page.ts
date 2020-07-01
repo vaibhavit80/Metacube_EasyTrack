@@ -129,8 +129,8 @@ this.zbar.scan(options)
    //alert(this.trackNo);
    if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
    {
-//alert(this.trackNo);
-localStorage.setItem("intent", '');
+     //alert(this.trackNo);
+
     this.trackNo = this.trackNo.replace('\u001d','');
     this.carCode = this.helper.GetCarrierCode(this.trackNo);
     this.track_Form = this.formBuilder.group({
@@ -151,11 +151,11 @@ localStorage.setItem("intent", '');
    }
   }
   ionViewWillEnter() { 
-
-    // if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
-    // {
-    //this.track_Form.reset();
-   //}
+    this.trackNo = localStorage.getItem("intent");
+    if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
+    {
+    this.track_Form.reset();
+    }
    this.setfilteringDatestoSession();
    this.splashScreen.hide();
   }
@@ -172,7 +172,7 @@ localStorage.setItem("intent", '');
   }
   doTrack(value) {
     try {
-     
+      localStorage.setItem("intent", '');
     this.queryParam = new QueryParams();
     this.queryParam.TrackingNo = value.TrackingNo;
     this.queryParam.Carrier = value.Carrier;
