@@ -72,9 +72,13 @@ export class AppComponent {
 
   private notificationSetup() {
     this.fcm.getToken();
+    this.fcm.refreshToken().subscribe(token => {
+      console.log(token);
+    });
+    
     this.fcm.onNotifications().subscribe(msg => {
         //console.log(msg);
-          if (this.platform.is('ios')) {
+          // if (this.platform.is('ios')) {
             let notification : string;
             notification = msg.aps.alert.body;
             let message = notification.split(',');
@@ -102,13 +106,13 @@ export class AppComponent {
             // else{
             //   alert('Foreground');
             // }
-          } 
-          else {
-            // let notification : string;
-            // notification = msg.body;
-            // let message = notification.split(',');
-            // this.presentToast(message[0] + ' ' + message[5]);
-          }
+          // } 
+          // else {
+          //   // let notification : string;
+          //   // notification = msg.body;
+          //   // let message = notification.split(',');
+          //   // this.presentToast(message[0] + ' ' + message[5]);
+          // }
         });
   }
 

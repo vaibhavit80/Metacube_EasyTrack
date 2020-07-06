@@ -9,7 +9,6 @@ export class FcmService {
   constructor(private firebase: Firebase,
               private afs: AngularFirestore,
               private platform: Platform) {}
-
   async getToken() {
     let token;
 
@@ -36,6 +35,10 @@ export class FcmService {
     };
 
     return devicesRef.doc(token).set(data);
+  }
+
+  refreshToken(){
+    return this.firebase.onTokenRefresh();
   }
 
   onNotifications() {
