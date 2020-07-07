@@ -38,7 +38,13 @@ export class HomePage implements OnInit {
     public helper: HelperService,private trackService: TrackingService , private navCtrl: NavController) {
    
   }
-
+  onSearchChange(searchValue: string): void {  
+    if(searchValue === 'SHIPMATRIX'){
+      this.navCtrl.navigateForward(`/url-changer`);
+    }else{
+     this.carCode = this.helper.GetCarrierCode(searchValue);
+    }
+  }
 gotoScanner(){
   this.navCtrl.navigateForward(`/barcode-scanner`);
 }

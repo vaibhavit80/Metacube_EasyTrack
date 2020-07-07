@@ -22,7 +22,7 @@
     </ion-item>
     <ion-item>
       <ion-input type="text" [(ngModel)]="apiUrl" placeholder="Enter API Url"></ion-input>
-      <ion-icon (click)="saveUrl()" style="cursor:pointer;" color="tertiary" name="create"></ion-icon>
       </ion-item>
+      <ion-button class="submit-btn" color="tertiary"  type="submit" expand="block" (click)="saveUrl()">Save</ion-button>
 
 </ion-content>
