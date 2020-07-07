@@ -75,10 +75,11 @@ export class AppComponent {
     this.fcm.refreshToken().subscribe(token => {
       console.log(token);
     });
-    
+
+    this.fcm.subscribetoMessage(this.uniqueDeviceID);
+       
     this.fcm.onNotifications().subscribe(msg => {
-        //console.log(msg);
-          // if (this.platform.is('ios')) {
+          if (this.platform.is('ios')) {
             let notification : string;
             notification = msg.aps.alert.body;
             let message = notification.split(',');
@@ -99,21 +100,10 @@ export class AppComponent {
                 this.trackService.logError(JSON.stringify(Exception),'notificationSetup()');
                 this.loadingController.presentToast('Error', JSON.stringify(Exception));
               }
-
-            // if(msg.wasTapped){
-            //   alert('Background');
-            // }
-            // else{
-            //   alert('Foreground');
-            // }
-          // } 
-          // else {
-          //   // let notification : string;
-          //   // notification = msg.body;
-          //   // let message = notification.split(',');
-          //   // this.presentToast(message[0] + ' ' + message[5]);
-          // }
+            }
         });
+
+        this.fcm.unsubscribetoMessage(this.uniqueDeviceID);
   }
 
   initializeApp() {
@@ -136,7 +126,6 @@ export class AppComponent {
       });
       this.statusBar.backgroundColorByHexString('#7606a7');
       this.trackService.GenerateDeviceID();
-
       this.notificationSetup();
     }else{
       this.storage.set('deviceID', '12345');

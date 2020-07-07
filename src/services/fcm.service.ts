@@ -1,3 +1,4 @@
+import { FCM } from '@ionic-native/fcm/ngx';
 import { Injectable } from '@angular/core';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import { Platform } from '@ionic/angular';
@@ -8,9 +9,11 @@ import { TrackingService } from './tracking.service';
 export class FcmService {
 
   constructor(private firebase: Firebase,
+              private fcm: FCM,
+              private trackService : TrackingService,
               private afs: AngularFirestore,
-              private platform: Platform , private trackSer: TrackingService) {}
-
+              private platform: Platform) {}
+             
   async getToken() {
     let token;
 
@@ -22,13 +25,13 @@ export class FcmService {
       token = await this.firebase.getToken();
       await this.firebase.grantPermission();
     }
-    this.trackSer.logError('Token - ' + token, 'saveToken');
+
     this.saveToken(token);
   }
 
   private saveToken(token) {
     if (!token) return;
-
+    this.trackService.logError('IOS Token - ' + token, 'saveToken');
     const devicesRef = this.afs.collection('devices');
 
     const data = {
@@ -37,6 +40,14 @@ export class FcmService {
     };
 
     return devicesRef.doc(token).set(data);
+  }
+
+  subscribetoMessage(topic){
+    this.fcm.subscribeToTopic(topic);
+  }
+
+  unsubscribetoMessage(topic){
+    this.fcm.unsubscribeFromTopic(topic);
   }
 
   refreshToken(){
