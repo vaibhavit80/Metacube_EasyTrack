@@ -139,6 +139,7 @@ this.zbar.scan(options)
     Description: new FormControl('', Validators.max(250)),
     Res_Del : new FormControl(false)
   });
+  localStorage.setItem("intent", '');
  // alert('end' + this.trackNo);
    }
    else{ 

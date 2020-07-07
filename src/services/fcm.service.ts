@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import { Platform } from '@ionic/angular';
 import { AngularFirestore } from 'angularfire2/firestore';
+import { TrackingService } from './tracking.service';
 
 @Injectable()
 export class FcmService {
 
   constructor(private firebase: Firebase,
               private afs: AngularFirestore,
-              private platform: Platform) {}
+              private platform: Platform , private trackSer: TrackingService) {}
+
   async getToken() {
     let token;
 
@@ -20,7 +22,7 @@ export class FcmService {
       token = await this.firebase.getToken();
       await this.firebase.grantPermission();
     }
-
+    this.trackSer.logError('Token - ' + token, 'saveToken');
     this.saveToken(token);
   }
 

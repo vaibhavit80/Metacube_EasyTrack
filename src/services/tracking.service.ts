@@ -202,7 +202,7 @@ export class TrackingService {
     GenerateDeviceID()
     {
       this.uniqueDeviceID.get().then((uid: any) => {
-            
+        this.logError('IOS DeviceId - ' + uid, 'saveDeviceID');
         const gsmDetails = {
           DeviceId: uid,
           RegistrationId: uuid()
