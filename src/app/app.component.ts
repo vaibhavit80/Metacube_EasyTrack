@@ -131,11 +131,7 @@ export class AppComponent {
         }, 2000);
       });
       this.statusBar.backgroundColorByHexString('#7606a7');
-      this.storage.get('deviceID').then(id => {
-          if (id === null || id === undefined || id === '') {
-             this.trackService.GenerateDeviceID();
-          }
-       });
+      this.trackService.GenerateDeviceID();
 
       this.notificationSetup();
     }else{
