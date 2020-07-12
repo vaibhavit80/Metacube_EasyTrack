@@ -202,18 +202,28 @@ export class TrackingService {
     GenerateDeviceID()
     {
       this.uniqueDeviceID.get().then((uid: any) => {
-        this.logError('IOS DeviceId - ' + uid, 'saveDeviceID');
-        const gsmDetails = {
-          DeviceId: uid,
-          RegistrationId: uuid()
-        };
-        this.saveDeviceID(gsmDetails).subscribe(data => {
-          this.storage.set('deviceID', uid);
-          this.storage.set('first_time', 'done');
-        },
-        error => {
-          this.logError('Error - ' + error, 'saveDeviceID');
-        });
+        this.storage.get('deviceToken').then(devToken => {
+           if (devToken !== null && devToken !== undefined && devToken !== ''){
+            const gsmDetails = {
+              DeviceId: uid,
+              DeviceType: 'IOS',
+              DeviceToken: devToken,
+              RegistrationId: uuid()
+            };
+            
+            this.saveDeviceID(gsmDetails).subscribe(data => {
+              this.storage.set('deviceID', uid);
+              this.storage.set('first_time', 'done');
+            },
+            error => {
+              this.logError('Error - ' + error, 'saveDeviceID');
+            });
+          } else {
+            this.logError('Error - No found device token', 'saveDeviceID');
+          return;
+        }
+      });
+
     }).catch((error: any) => this.logError('Error - ' + JSON.stringify(error), 'saveDeviceID'));
 
     }

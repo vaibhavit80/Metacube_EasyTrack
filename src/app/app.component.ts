@@ -67,6 +67,7 @@ export class AppComponent {
     private iab : InAppBrowser
   ) {
     this.splashScreen.show();
+    this.notificationSetup();
     this.initializeApp();
   }
 
@@ -126,9 +127,9 @@ export class AppComponent {
       });
       this.statusBar.backgroundColorByHexString('#7606a7');
       this.trackService.GenerateDeviceID();
-      this.notificationSetup();
+
     }else{
-      this.storage.set('deviceID', '12345');
+      this.storage.set('deviceID', 'browser');
     }
     });
   }

@@ -10,6 +10,7 @@ export class FcmService {
 
   constructor(private firebase: Firebase,
               private fcm: FCM,
+              private storage : Storage,
               private trackService : TrackingService,
               private afs: AngularFirestore,
               private platform: Platform) {}
@@ -25,15 +26,14 @@ export class FcmService {
       token = await this.firebase.getToken();
       await this.firebase.grantPermission();
     }
-
+    this.storage.set('deviceToken', token);
     this.saveToken(token);
   }
 
   private saveToken(token) {
     if (!token) return;
-    this.trackService.logError('IOS Token - ' + token, 'saveToken');
     const devicesRef = this.afs.collection('devices');
-
+    this.storage.set('deviceToken', token);
     const data = {
       token,
       userId: 'testUserId'
