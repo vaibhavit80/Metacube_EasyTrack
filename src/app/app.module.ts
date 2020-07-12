@@ -30,6 +30,7 @@ import { ZBar } from '@ionic-native/zbar/ngx';
 import { UrlChangerPage } from './pages/url-changer/url-changer.page';
 import { UrlChangerPageModule } from './pages/url-changer/url-changer.module';
 import { HomePageModule } from './pages/home/home.module';
+import { FCM } from '@ionic-native/fcm/ngx';
 
 const config = {
   apiKey: "AIzaSyB-31B97WmwEKjgyOk731wuYFP2vjDDxI8",
@@ -66,6 +67,7 @@ driverOrder: ['indexeddb', 'sqlite', 'websql']
     SplashScreen,
     NativeGeocoder,
     Firebase,
+    FCM,
     ZBar,
     FcmService,
     Network,

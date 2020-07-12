@@ -101,6 +101,7 @@
     <plugin name="cordova-plugin-openwith-ios" spec="^2.0.0">
         <variable name="IOS_URL_SCHEME" value="oaisheasytrack" />
     </plugin>
+    <plugin name="cordova-plugin-fcm-with-dependecy-updated" spec="7.0.2" />
     <engine name="ios" spec="4.5.5" />
     <engine name="android" spec="8.1.0" />
 </widget>
