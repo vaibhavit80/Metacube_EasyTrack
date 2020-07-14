@@ -5,14 +5,18 @@ import { Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { TrackingService } from './tracking.service';
+import { QueryParams } from 'src/app/models/QueryParams';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 
 @Injectable()
 export class FcmService {
+  queryParam: QueryParams;
 
   constructor(private firebase: Firebase,
               private storage : Storage,
               private trackService : TrackingService,
               private afs: AngularFirestore,
+              private uniqueDeviceID: UniqueDeviceID, 
               private platform: Platform) {}
              
   async getToken() {
@@ -59,5 +63,41 @@ export class FcmService {
 
   onNotifications() {
     return this.firebase.onNotificationOpen();
+  }
+
+  public notificationSetup() {
+    this.getToken();
+    this.refreshToken().subscribe(token => {
+      console.log(token);
+    });
+
+    this.subscribetoMessage(this.uniqueDeviceID);
+       
+    this.onNotifications().subscribe(msg => {
+          if (this.platform.is('ios')) {
+            let notification : string;
+            notification = msg.aps.alert.body;
+            let message = notification.split(',');
+            let trackingNoMessage = message[0].split(':');
+            let carrierMessage = message[5].split(':');
+            let trackingNo = trackingNoMessage[1].trim();
+            let carrier = carrierMessage[1].trim();
+            //let recordKey = trackingNo + '-' + carrier;
+
+            try {
+              this.queryParam = new QueryParams();
+              this.queryParam.TrackingNo = trackingNo;
+              this.queryParam.Carrier = carrier;
+              this.queryParam.Description = '';
+              this.queryParam.Residential = 'false';
+              this.trackService.getTrackingDetails(this.queryParam);
+              } catch (Exception) {
+                this.trackService.logError(JSON.stringify(Exception),'notificationSetup()');
+               // this.loadingController.presentToast('Error', JSON.stringify(Exception));
+              }
+            }
+        });
+
+        this.unsubscribetoMessage(this.uniqueDeviceID);
   }
 }

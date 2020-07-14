@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {  NavController, Platform } from '@ionic/angular';
+import {  NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { environment } from 'src/environments/environment';
 import { SessionData } from 'src/app/models/active-packages';
 import { LoaderService } from 'src/app/providers/loader.service';
 import { TrackingService } from 'src/services/tracking.service';
 import { FcmService } from 'src/services/fcm.service';
-import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 import { QueryParams } from 'src/app/models/QueryParams';
 @Component({
   selector: 'app-url-changer',
@@ -17,12 +16,9 @@ export class UrlChangerPage implements OnInit {
 
   apiType = '';
   apiUrl = '';
-  queryParam: QueryParams;
   constructor(private navCtrl: NavController,
     private trackService: TrackingService,
-    private platform: Platform,
     public loadingController: LoaderService, 
-    private uniqueDeviceID: UniqueDeviceID, 
     private fcm: FcmService,
     private storage: Storage) {
     debugger;
@@ -37,7 +33,7 @@ export class UrlChangerPage implements OnInit {
       if (id !== null && id !== undefined && id !== '') {
         this.loadingController.presentToast('alert', 'DeviceToken - '+ id);
       } else {
-        this.notificationSetup();
+        this.fcm.notificationSetup();
       }
     });
     this.apiType = SessionData.apiType;
@@ -86,40 +82,5 @@ export class UrlChangerPage implements OnInit {
   }
   dismiss() {
     this.navCtrl.pop();
-  }
-  private notificationSetup() {
-    this.fcm.getToken();
-    this.fcm.refreshToken().subscribe(token => {
-      console.log(token);
-    });
-
-    this.fcm.subscribetoMessage(this.uniqueDeviceID);
-       
-    this.fcm.onNotifications().subscribe(msg => {
-          if (this.platform.is('ios')) {
-            let notification : string;
-            notification = msg.aps.alert.body;
-            let message = notification.split(',');
-            let trackingNoMessage = message[0].split(':');
-            let carrierMessage = message[5].split(':');
-            let trackingNo = trackingNoMessage[1].trim();
-            let carrier = carrierMessage[1].trim();
-            //let recordKey = trackingNo + '-' + carrier;
-
-            try {
-              this.queryParam = new QueryParams();
-              this.queryParam.TrackingNo = trackingNo;
-              this.queryParam.Carrier = carrier;
-              this.queryParam.Description = '';
-              this.queryParam.Residential = 'false';
-              this.trackService.getTrackingDetails(this.queryParam);
-              } catch (Exception) {
-                this.trackService.logError(JSON.stringify(Exception),'notificationSetup()');
-                this.loadingController.presentToast('Error', JSON.stringify(Exception));
-              }
-            }
-        });
-
-        this.fcm.unsubscribetoMessage(this.uniqueDeviceID);
   }
 }
