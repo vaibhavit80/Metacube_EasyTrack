@@ -16,13 +16,6 @@ export class UrlChangerPage implements OnInit {
   apiUrl = '';
   constructor(private navCtrl: NavController,private trackService: TrackingService,public loadingController: LoaderService, private storage: Storage) {
     debugger;
-    this.storage.get('deviceToken').then(id => {
-      if (id !== null && id !== undefined && id !== '') {
-        this.loadingController.presentToast('alert', 'Token - '+ id);
-      } else {
-        this.loadingController.presentToast('alert', 'No Token Available');
-      }
-    });
     this.storage.get('deviceID').then(id => {
       if (id !== null && id !== undefined && id !== '') {
         this.loadingController.presentToast('alert', 'DeviceId - '+ id);
@@ -30,6 +23,7 @@ export class UrlChangerPage implements OnInit {
         this.loadingController.presentToast('alert', 'No DeviceId Available');
       }
     });
+    
     this.apiType = SessionData.apiType;
     this.apiUrl = SessionData.apiURL;
     if(this.apiType === 'P'){
@@ -49,22 +43,26 @@ export class UrlChangerPage implements OnInit {
      }else if(this.apiType === 'B'){
       this.apiUrl = environment.api_Url_Beta ; 
      }else {
-      this.apiUrl = ''; 
+      this.apiUrl = SessionData.apiURL; 
      }
   }
   ngOnInit() {
   }
   saveUrl(){
     try{
-    this.storage.set('apiData', {
-      apiURL : this.apiUrl,
-      apiType : this.apiType
-    });
-    SessionData.apiURL = this.apiUrl ; 
-    SessionData.apiType = this.apiType; 
-    this.trackService.saveToken();
-    this.loadingController.presentToast('alert', 'API url successfully updated.');
-    this.navCtrl.pop();
+      if(this.apiUrl === null || this.apiUrl === undefined || this.apiUrl === '' ){
+          this.loadingController.presentToast('Error', 'Invalid API url');
+      }else{
+          this.storage.set('apiData', {
+            apiURL : this.apiUrl,
+            apiType : this.apiType
+          });
+          SessionData.apiURL = this.apiUrl ; 
+          SessionData.apiType = this.apiType; 
+          this.trackService.saveToken();
+          this.loadingController.presentToast('alert', 'API url successfully updated.');
+          this.navCtrl.pop();
+     }
   }catch(Exception){
 
   }

@@ -128,6 +128,8 @@ this.zbar.scan(options)
       if (aData !== null && aData !== undefined) {
          SessionData.apiURL = aData.apiURL ; 
          SessionData.apiType = aData.apiType; 
+        }else{
+          this.navCtrl.navigateForward(`/url-changer`);
         }
       });
    
