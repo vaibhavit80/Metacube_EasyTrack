@@ -34,7 +34,9 @@ export class UrlChangerPage implements OnInit {
       }
     });
     this.storage.get('deviceToken').then(id => {
-      if (id === null || id === undefined || id === '') {
+      if (id !== null && id !== undefined && id !== '') {
+        this.loadingController.presentToast('alert', 'DeviceToken - '+ id);
+      } else {
         this.notificationSetup();
       }
     });
