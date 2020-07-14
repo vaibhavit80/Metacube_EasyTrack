@@ -67,7 +67,7 @@ export class AppComponent {
     private iab : InAppBrowser
   ) {
     this.splashScreen.show();
-    this.notificationSetup();
+  
     this.initializeApp();
   }
 
@@ -111,6 +111,7 @@ export class AppComponent {
 
     this.platform.ready().then(() => {
       if (this.platform.is('cordova')) {
+        this.notificationSetup();
       this.network.onDisconnect().subscribe(()=>
       {
         setTimeout(()=>

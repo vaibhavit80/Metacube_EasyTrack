@@ -203,6 +203,7 @@ export class TrackingService {
     {
       this.uniqueDeviceID.get().then((uid: any) => {
         this.storage.get('deviceToken').then(devToken => {
+         //// alert('DeviceToken'+devToken);
            if (devToken !== null && devToken !== undefined && devToken !== ''){
             const gsmDetails = {
               DeviceId: uid,

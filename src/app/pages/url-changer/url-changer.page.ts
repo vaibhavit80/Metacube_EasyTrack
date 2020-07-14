@@ -16,6 +16,13 @@ export class UrlChangerPage implements OnInit {
   apiUrl = '';
   constructor(private navCtrl: NavController,private trackService: TrackingService,public loadingController: LoaderService, private storage: Storage) {
     debugger;
+    this.storage.get('deviceToken').then(id => {
+      if (id !== null && id !== undefined && id !== '') {
+        this.loadingController.presentToast('alert', 'Token - '+ id);
+      } else {
+        this.loadingController.presentToast('alert', 'No Token Available');
+      }
+    });
     this.storage.get('deviceID').then(id => {
       if (id !== null && id !== undefined && id !== '') {
         this.loadingController.presentToast('alert', 'DeviceId - '+ id);
