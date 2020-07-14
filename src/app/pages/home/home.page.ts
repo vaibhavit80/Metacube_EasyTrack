@@ -123,7 +123,9 @@ this.zbar.scan(options)
   help(){
     this.navCtrl.navigateForward(`/help`);
   }
+
   ngOnInit() {
+
     this.storage.get('apiData').then(aData => {
       if (aData !== null && aData !== undefined) {
          SessionData.apiURL = aData.apiURL ; 
