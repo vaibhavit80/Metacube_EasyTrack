@@ -111,7 +111,7 @@ export class AppComponent {
 
     this.platform.ready().then(() => {
       if (this.platform.is('cordova')) {
-        this.notificationSetup();
+       
       this.network.onDisconnect().subscribe(()=>
       {
         setTimeout(()=>
@@ -127,11 +127,13 @@ export class AppComponent {
         }, 2000);
       });
       this.statusBar.backgroundColorByHexString('#7606a7');
+      this.notificationSetup();
       this.trackService.GenerateDeviceID();
 
     }else{
       this.storage.set('deviceID', 'browser');
     }
+    this.trackService.saveToken();
     });
   }
   openUrl() {

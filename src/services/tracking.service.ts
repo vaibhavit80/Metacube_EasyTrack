@@ -201,32 +201,45 @@ export class TrackingService {
     }
     GenerateDeviceID()
     {
-      this.uniqueDeviceID.get().then((uid: any) => {
-        this.storage.get('deviceToken').then(devToken => {
-         //// alert('DeviceToken'+devToken);
-           if (devToken !== null && devToken !== undefined && devToken !== ''){
-            const gsmDetails = {
-              DeviceId: uid,
-              DeviceType: 'IOS',
-              DeviceToken: devToken,
-              RegistrationId: uuid()
-            };
-            
-            this.saveDeviceID(gsmDetails).subscribe(data => {
-              this.storage.set('deviceID', uid);
-              this.storage.set('first_time', 'done');
-            },
-            error => {
-              this.logError('Error - ' + error, 'saveDeviceID');
-            });
-          } else {
-            this.logError('Error - No found device token', 'saveDeviceID');
+           this.uniqueDeviceID.get().then((uid: any) => {
+            this.storage.set('deviceID', uid);
+           }).catch((error: any) => this.logError('Error - ' + JSON.stringify(error), 'saveDeviceID'));
+    }
+    saveToken(){
+      this.storage.get('deviceToken').then(devToken => {
+         
+        if (devToken !== null && devToken !== undefined && devToken !== ''){
+          alert('DeviceToken = ' + devToken);
+          this.storage.get('deviceID').then(devID => {
+
+            if (devID !== null && devID !== undefined && devID !== ''){
+                     alert('DeviceID' + devID);
+                      const gsmDetails = {
+                        DeviceId: devID,
+                        DeviceType: 'IOS',
+                        DeviceToken: devToken,
+                        RegistrationId: uuid()
+                      };
+                      this.saveDeviceID(gsmDetails).subscribe(data => {
+                        if(data.Error){
+                          this.logError('Error - ' + JSON.stringify(data.Message), 'saveDeviceID');
+                        }else{
+                          this.loadingController.presentToast('alert','Token Saved');
+                        }
+                      },
+                      error => {
+                        this.logError('Error - ' + JSON.stringify(error), 'saveDeviceID');
+                      });
+                    } else {
+                      this.logError('Error - No device ID', 'saveDeviceID');
+                      return;
+                    }  
+                });
+        } else {
+          this.logError('Error - No device token', 'saveDeviceID');
           return;
-        }
-      });
-
-    }).catch((error: any) => this.logError('Error - ' + JSON.stringify(error), 'saveDeviceID'));
-
+        }  
+    });
     }
     saveError(errorData:ErrorDetails): Observable<any> {
       return this.http.put(SessionData.apiURL + environment.logErrorMessage , errorData, {

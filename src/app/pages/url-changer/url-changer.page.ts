@@ -62,7 +62,7 @@ export class UrlChangerPage implements OnInit {
     });
     SessionData.apiURL = this.apiUrl ; 
     SessionData.apiType = this.apiType; 
-    this.trackService.GenerateDeviceID();
+    this.trackService.saveToken();
     this.loadingController.presentToast('alert', 'API url successfully updated.');
     this.navCtrl.pop();
   }catch(Exception){

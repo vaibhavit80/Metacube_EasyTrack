@@ -26,16 +26,16 @@ export class FcmService {
       token = await this.firebase.getToken();
       await this.firebase.grantPermission();
     }
-
+    if (!token) return;
+    this.storage.set('deviceToken', token);
     this.saveToken(token);
   }
 
   private saveToken(token) {
     if (!token) return;
-    
+    this.storage.set('deviceToken', token);
     const devicesRef = this.afs.collection('devices');
    // this.trackService.logError('Token'+ token , 'SaveToken');
-    this.storage.set('deviceToken', token);
    // alert(token);
     const data = {
       token,
