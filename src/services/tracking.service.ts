@@ -209,11 +209,11 @@ export class TrackingService {
       this.storage.get('deviceToken').then(devToken => {
          
         if (devToken !== null && devToken !== undefined && devToken !== ''){
-          alert('DeviceToken = ' + devToken);
+         // alert('DeviceToken = ' + devToken);
           this.storage.get('deviceID').then(devID => {
 
             if (devID !== null && devID !== undefined && devID !== ''){
-                     alert('DeviceID' + devID);
+                   //  alert('DeviceID' + devID);
                       const gsmDetails = {
                         DeviceId: devID,
                         DeviceType: 'IOS',
