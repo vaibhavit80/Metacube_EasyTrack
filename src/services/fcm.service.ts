@@ -7,6 +7,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { TrackingService } from './tracking.service';
 import { QueryParams } from 'src/app/models/QueryParams';
 import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
+import { SessionData } from 'src/app/models/active-packages';
 
 @Injectable()
 export class FcmService {
@@ -74,7 +75,13 @@ export class FcmService {
     this.subscribetoMessage(this.uniqueDeviceID);
        
     this.onNotifications().subscribe(msg => {
+
           if (this.platform.is('ios')) {
+            this.storage.get('apiData').then(aData => {
+              if (aData !== null && aData !== undefined) {
+                 SessionData.apiURL = aData.apiURL ; 
+                 SessionData.apiType = aData.apiType; 
+                }});
             let notification : string;
             notification = msg.aps.alert.body;
             let message = notification.split(',');

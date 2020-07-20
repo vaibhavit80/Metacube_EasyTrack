@@ -223,8 +223,6 @@ export class TrackingService {
                       this.saveDeviceID(gsmDetails).subscribe(data => {
                         if(data.Error){
                           this.logError('Error - ' + JSON.stringify(data.Message), 'saveDeviceID');
-                        }else{
-                          this.loadingController.presentToast('alert','Token Saved');
                         }
                       },
                       error => {

@@ -126,17 +126,6 @@ this.zbar.scan(options)
 
   ngOnInit() {
      this.fillIntentValue();
-    this.storage.get('apiData').then(aData => {
-      if (aData !== null && aData !== undefined) {
-         SessionData.apiURL = aData.apiURL ; 
-         SessionData.apiType = aData.apiType;
-        }else{
-          this.navCtrl.navigateForward(`/url-changer`);
-        }
-      });
-   
-   
-
   }
   fillIntentValue(){
     this.trackNo = localStorage.getItem("intent");

@@ -1,5 +1,5 @@
 import { environment } from 'src/environments/environment';
-
+//import { Storage } from '@ionic/storage';
 export class ActivePackages {
     TrackingNo: string;
     Status: string;
@@ -26,6 +26,7 @@ export class FilteringDates {
 }
 
 export class SessionData {
+
     static packages: Packages = new Packages();
     static filteringDates: FilteringDates = new FilteringDates();
     static apiURL: string = environment.api_Url_Prod;
