@@ -125,18 +125,22 @@ this.zbar.scan(options)
   }
 
   ngOnInit() {
-
+     this.fillIntentValue();
     this.storage.get('apiData').then(aData => {
       if (aData !== null && aData !== undefined) {
          SessionData.apiURL = aData.apiURL ; 
-         SessionData.apiType = aData.apiType; 
+         SessionData.apiType = aData.apiType;
         }else{
           this.navCtrl.navigateForward(`/url-changer`);
         }
       });
    
-   this.trackNo = localStorage.getItem("intent");
-   //alert(this.trackNo);
+   
+
+  }
+  fillIntentValue(){
+    this.trackNo = localStorage.getItem("intent");
+     //alert(this.trackNo);
    if(this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '' )
    {
      //alert(this.trackNo);
@@ -162,11 +166,7 @@ this.zbar.scan(options)
    }
   }
   ionViewWillEnter() { 
-    this.trackNo = localStorage.getItem("intent");
-    if(this.trackNo === null || this.trackNo === undefined || this.trackNo === '' )
-    {
-    this.track_Form.reset();
-    }
+   this.fillIntentValue();
    this.setfilteringDatestoSession();
    this.splashScreen.hide();
   }
