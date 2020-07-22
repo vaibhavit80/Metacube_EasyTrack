@@ -117,7 +117,7 @@ export class DetailsPage implements OnInit {
     });
   }
  share() {
-  this.social.presentActionSheet();
+  this.social.presentActionSheet2();
  }
   goBack() {
     this.navCtrl.pop();

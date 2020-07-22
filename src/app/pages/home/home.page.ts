@@ -16,7 +16,6 @@ import { LoaderService } from 'src/app/providers/loader.service';
 import { HelperService } from 'src/app/providers/helper.service';
 import { UrlChangerPage } from '../url-changer/url-changer.page';
 import { Storage } from '@ionic/storage';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -36,7 +35,7 @@ export class HomePage implements OnInit {
   constructor(private route: ActivatedRoute, platform: Platform, private splashScreen: SplashScreen,
     private barcodeScanner: BarcodeScanner, private storage: Storage,
     public formBuilder: FormBuilder, private zbar: ZBar, public loadingController: LoaderService,
-    public helper: HelperService, private trackService: TrackingService, private navCtrl: NavController, private socialSharing: SocialSharing) {
+    public helper: HelperService, private trackService: TrackingService, private navCtrl: NavController) {
 
   }
   onSearchChange(searchValue: string): void {
@@ -122,22 +121,6 @@ export class HomePage implements OnInit {
         this.trackService.logError(JSON.stringify(error), 'barcode Scan issue');
         this.loadingController.presentToast('Error', 'Something went wrong');
       });
-  }
-  public share2(): void {
-    debugger;
-    try {
-      // var options = {
-      //   message: 'Check out this item',
-      //   subject: 'Item',
-      //   url: 'http://example.com',
-      //   chooserTitle: 'Share via...'
-      // };
-      this.socialSharing.share("Test Message", "Test Subject", "Test Files", "Test URL");
-      this.loadingController.presentToast('Success', "Share has launched");
-    }
-    catch (Exception) {
-      this.loadingController.presentToast('Error', "Error in sharing");
-    }
   }
   help() {
     this.navCtrl.navigateForward(`/help`);
