@@ -123,19 +123,21 @@ export class HomePage implements OnInit {
         this.loadingController.presentToast('Error', 'Something went wrong');
       });
   }
-  share2() {
+  public share2(): void {
     debugger;
-    // Check if sharing via email is supported
-    this.socialSharing.canShareViaEmail().then(() => {
-      // Share via email
-      this.socialSharing.shareViaEmail('Body', 'Subject', ['recipient@example.org']).then(() => {
-        // Success!
-      }).catch(() => {
-        // Error!
-      });
-    }).catch(() => {
-      // Sharing via email is not possible
-    });
+    try {
+      // var options = {
+      //   message: 'Check out this item',
+      //   subject: 'Item',
+      //   url: 'http://example.com',
+      //   chooserTitle: 'Share via...'
+      // };
+      this.socialSharing.share("Test Message", "Test Subject", "Test Files", "Test URL");
+      this.loadingController.presentToast('Success', "Share has launched");
+    }
+    catch (Exception) {
+      this.loadingController.presentToast('Error', "Error in sharing");
+    }
   }
   help() {
     this.navCtrl.navigateForward(`/help`);
