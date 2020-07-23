@@ -107,11 +107,13 @@ export class HelperService {
         case 'D':
           return 'DHL';
         case 'F':
-          return 'FedEx Ground';
+          return 'FedEx Express';
         case 'R':
-          return 'FedEx';
+          return 'FedEx Ground';
         case 'P':
           return 'Purulator';
+        case 'O':
+          return 'OnTrac';
         default:
           return 'Invalid';
      }
