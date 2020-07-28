@@ -56,6 +56,7 @@ export class AppComponent {
 
   constructor(
     private platform: Platform,
+    private navCtrl: NavController,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public loadingController: LoaderService,
@@ -75,6 +76,14 @@ export class AppComponent {
   initializeApp() {
 
     this.platform.ready().then(() => {
+      this.platform.resume.subscribe(async () => {
+        let intentVal = localStorage.getItem("intent");
+        if(intentVal !== null && intentVal !== undefined && intentVal !== '' )
+        {this.navCtrl.navigateForward('/home');}
+      });
+      this.platform.pause.subscribe(async () => {
+        this.navCtrl.navigateForward('/home');
+      });
       if (this.platform.is('cordova')) {
        
       this.network.onDisconnect().subscribe(()=>
