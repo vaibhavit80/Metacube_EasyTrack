@@ -77,10 +77,11 @@ export class AppComponent {
 
     this.platform.ready().then(() => {
       this.platform.resume.subscribe(async () => {
-        let intentVal = localStorage.getItem("intent");
-        if(intentVal !== null && intentVal !== undefined && intentVal !== '' )
-        {this.navCtrl.navigateForward('/home');}
-      });
+        let trackNo = localStorage.getItem("intent");
+        if (trackNo !== null && trackNo !== undefined && trackNo !== '') {
+         // this.navCtrl.navigateForward('/home');
+        }
+      })
       this.platform.pause.subscribe(async () => {
         this.navCtrl.navigateForward('/home');
       });

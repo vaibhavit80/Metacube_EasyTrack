@@ -131,7 +131,7 @@ export class HomePage implements OnInit {
   }
   fillIntentValue() {
     this.trackNo = localStorage.getItem("intent");
-    //alert(this.trackNo);
+   // alert(this.trackNo);
     if (this.trackNo !== null && this.trackNo !== undefined && this.trackNo !== '') {
       //alert(this.trackNo);
 
@@ -156,7 +156,7 @@ export class HomePage implements OnInit {
     }
   }
   ionViewWillEnter() {
-    this.fillIntentValue();
+    //this.fillIntentValue();
     this.setfilteringDatestoSession();
     this.splashScreen.hide();
   }
