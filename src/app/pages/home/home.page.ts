@@ -16,6 +16,7 @@ import { LoaderService } from 'src/app/providers/loader.service';
 import { HelperService } from 'src/app/providers/helper.service';
 import { UrlChangerPage } from '../url-changer/url-changer.page';
 import { Storage } from '@ionic/storage';
+import { FcmService } from 'src/services/fcm.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -24,7 +25,7 @@ import { Storage } from '@ionic/storage';
 export class HomePage implements OnInit {
   track_Form: FormGroup;
   loaderToShow: any;
-  carCode: any = 'U';
+  carCode: any = '';
   queryParam: QueryParams;
   encodeData: any;
   scannedData: {};
@@ -33,12 +34,23 @@ export class HomePage implements OnInit {
 
   // tslint:disable-next-line: max-line-length
   constructor(private route: ActivatedRoute, platform: Platform, private splashScreen: SplashScreen,
-    private barcodeScanner: BarcodeScanner, private storage: Storage,
+    private barcodeScanner: BarcodeScanner, private storage: Storage,private fcm: FcmService,
     public formBuilder: FormBuilder, private zbar: ZBar, public loadingController: LoaderService,
     public helper: HelperService, private trackService: TrackingService, private navCtrl: NavController) {
-
+      // this.storage.get('deviceID').then(id => {
+      //   if (id === null || id === undefined || id === '') {
+      //     this.trackService.GenerateDeviceID();
+      //   }
+      // });
+      // this.storage.get('deviceToken').then(id => {
+      //   if (id === null || id === undefined || id === '') {
+      //     this.fcm.notificationSetup();
+      //   }
+      // });
+      // this.trackService.saveToken();
   }
   onSearchChange(searchValue: string): void {
+    this.trackNo = searchValue;
     if (searchValue === 'SHIPMATRIX') {
       this.navCtrl.navigateForward(`/url-changer`);
     } else {
@@ -64,6 +76,7 @@ export class HomePage implements OnInit {
           //alert(JSON.stringify(barcodeData));
 
           this.trackNo = barcodeData.text.replace('\u001d', '');
+          this.trackNo = this.CorrectTrackingNo(this.trackNo);
           this.carCode = this.helper.GetCarrierCode(this.trackNo);
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(this.trackNo),
@@ -122,6 +135,12 @@ export class HomePage implements OnInit {
         this.loadingController.presentToast('Error', 'Something went wrong');
       });
   }
+  CorrectTrackingNo(trackNo: string) {
+    if ((trackNo.length > 20) && trackNo.substring(0, 3) == '420') {
+      this.trackNo = this.trackNo.substring(8);
+    }
+    return this.trackNo;
+  }
   help() {
     this.navCtrl.navigateForward(`/help`);
   }
@@ -157,8 +176,11 @@ export class HomePage implements OnInit {
   }
   ionViewWillEnter() {
     //this.fillIntentValue();
+    if(this.trackNo === 'SHIPMATRIX'){
+      this.fillIntentValue();
+    }
     this.setfilteringDatestoSession();
-    this.splashScreen.hide();
+   
   }
   fillCarrierCode(formVal) {
     if (formVal.TrackingNo === 'SHIPMATRIX') {
