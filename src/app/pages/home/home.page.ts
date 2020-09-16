@@ -77,6 +77,7 @@ export class HomePage implements OnInit {
 
           this.trackNo = barcodeData.text.replace('\u001d', '');
           this.trackNo = this.CorrectTrackingNo(this.trackNo);
+         
           this.carCode = this.helper.GetCarrierCode(this.trackNo);
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(this.trackNo),
@@ -84,7 +85,7 @@ export class HomePage implements OnInit {
             Description: new FormControl('', Validators.max(250)),
             Res_Del: new FormControl(false)
           });
-          this.trackService.logError(JSON.stringify(barcodeData), 'Tracking No');
+          //this.trackService.logError(JSON.stringify(barcodeData), 'Tracking No');
           // 
         } else {
           this.loadingController.presentToast('Warning', 'No Data Available');
@@ -141,7 +142,21 @@ export class HomePage implements OnInit {
     }
     return this.trackNo;
   }
-  help() {
+  ValidateTrackNo(trakNo: string)
+  {
+    if(trakNo.length > 3 && trakNo.substring(0,3).toLowerCase() === 'tba')
+    {
+      this.loadingController.presentToast('Warning','Please track this package via your amazon account.');
+      return false;
+    }
+    if(trakNo.length === 10 && /^[a-zA-Z]{5}/.test(trakNo))
+    {
+      this.loadingController.presentToast('Warning','Invalid Tracking No');
+      return false;
+    }
+    return true;
+  }
+   help() {
     this.navCtrl.navigateForward(`/help`);
   }
 
@@ -197,11 +212,14 @@ export class HomePage implements OnInit {
     try {
       localStorage.setItem("intent", '');
       this.queryParam = new QueryParams();
+      if(this.ValidateTrackNo(value.TrackingNo) === true){
+       // alert('1111');
       this.queryParam.TrackingNo = value.TrackingNo;
       this.queryParam.Carrier = value.Carrier;
       this.queryParam.Description = value.Description;
       this.queryParam.Residential = value.Res_Del;
       this.trackService.getTrackingDetails(this.queryParam);
+      }
     } catch (Exception) {
       this.trackService.logError(JSON.stringify(Exception), 'doTrack-home');
       this.loadingController.presentToast('Error', JSON.stringify(Exception));
