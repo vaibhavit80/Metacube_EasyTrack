@@ -26,6 +26,7 @@ export class HomePage implements OnInit {
   track_Form: FormGroup;
   loaderToShow: any;
   carCode: any = '';
+  carrierCode: any = '';
   queryParam: QueryParams;
   encodeData: any;
   scannedData: {};
@@ -198,34 +199,53 @@ export class HomePage implements OnInit {
    
   }
   fillCarrierCode(formVal) {
+   
     if (formVal.TrackingNo === 'SHIPMATRIX') {
       this.navCtrl.navigateForward(`/url-changer`);
     } else {
-      this.carCode = this.helper.GetCarrierCode(formVal.TrackingNo);
-      if (this.carCode === '' || this.carCode === undefined || this.carCode === null) {
-        this.loadingController.presentToast('Error', 'Invalid Packages.');
-        this.clearTrack();
-      }
+      this.loadingController.present('Varifying Carrier.');
+      if(this.ValidateTrackNo(formVal.TrackingNo) === true){
+        // alert('1111');
+        this.trackService.TNCapi(formVal.TrackingNo).subscribe(
+          data =>{
+
+            this.carrierCode = data.ResponseData.Carrier;
+            this.carCode = this.carrierCode === 'R' ? 'F' : this.carrierCode;
+            if (this.carCode === '' || this.carCode === undefined || this.carCode === null) {
+              this.loadingController.presentToast('Error', 'Invalid Packages');
+              this.clearTrack();
+            }
+            this.loadingController.dismiss();
+        },error=>{
+          this.loadingController.dismiss();
+          this.loadingController.presentToast('Error', 'Invalid Packages.');
+          this.clearTrack();
+        });
+      
+    }else{
+      this.clearTrack();
+    }
     }
   }
   doTrack(value) {
     try {
       localStorage.setItem("intent", '');
       this.queryParam = new QueryParams();
-      if(this.ValidateTrackNo(value.TrackingNo) === true){
-       // alert('1111');
+ 
       this.queryParam.TrackingNo = value.TrackingNo;
       this.queryParam.Carrier = value.Carrier;
       this.queryParam.Description = value.Description;
       this.queryParam.Residential = value.Res_Del;
       this.trackService.getTrackingDetails(this.queryParam);
-      }
+      
     } catch (Exception) {
       this.trackService.logError(JSON.stringify(Exception), 'doTrack-home');
       this.loadingController.presentToast('Error', JSON.stringify(Exception));
     }
   }
-  clearTrack() { this.track_Form.reset(); }
+  clearTrack() { 
+    this.carCode = '';
+    this.track_Form.reset(); }
   resInfoAlert() {
     this.loadingController.presentAlert('Info',
       // tslint:disable-next-line: max-line-length

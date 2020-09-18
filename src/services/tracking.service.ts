@@ -245,6 +245,14 @@ export class TrackingService {
         .set('Content-Type', 'application/json')
       });
     }
+    // Get TNC API
+    TNCapi(trackingNo:string): Observable<any> {
+      let request = {"TrackingNo":trackingNo};
+      return this.http.put(SessionData.apiURL + environment.tncApi , request, {
+        headers: new HttpHeaders()
+        .set('Content-Type', 'application/json')
+      });
+    }
    /// save Device Configuration
    saveDeviceConfiguration(configDetails: Configuration): Observable<any> {
     return this.http.put(SessionData.apiURL + environment.saveConfiguration, configDetails, {
