@@ -9,7 +9,7 @@ export const environment = {
   savePreferances: 'SavePreferences',
   saveConfiguration: 'SaveConfigure',
   logErrorMessage: 'LogErrorMessage',
-  tncApi:'tracking/classifier',
+  tncApi:'Tracking/Classifier',
   saveDeviceID: 'SaveGsmRegistration',
   // tslint:disable-next-line: max-line-length
   trackingAPI: 'Tracking?TrackingNo=@TrackingNo&Carrier=@Carrier&Description=@Description&Residential=@Residential&DeviceNo=@DeviceNo&AppUser=ShipMatrixApp&AppPwd=ShipMatrixApp&RegistrationId=@RegistrationId',

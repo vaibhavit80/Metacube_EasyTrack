@@ -55,7 +55,7 @@ export class HomePage implements OnInit {
     if (searchValue === 'SHIPMATRIX') {
       this.navCtrl.navigateForward(`/url-changer`);
     } else {
-      this.carCode = this.helper.GetCarrierCode(searchValue);
+     // this.carCode = this.helper.GetCarrierCode(searchValue);
     }
   }
   gotoScanner() {
@@ -203,27 +203,33 @@ export class HomePage implements OnInit {
     if (formVal.TrackingNo === 'SHIPMATRIX') {
       this.navCtrl.navigateForward(`/url-changer`);
     } else {
-      this.loadingController.present('Varifying Carrier.');
-      if(this.ValidateTrackNo(formVal.TrackingNo) === true){
+      
+      if(this.ValidateTrackNo(formVal.TrackingNo) === true && formVal.TrackingNo){
         // alert('1111');
+        this.loadingController.present('Varifying Carrier.');
         this.trackService.TNCapi(formVal.TrackingNo).subscribe(
           data =>{
-
+            console.log('CarrierDetails' + JSON.stringify(data))
             this.carrierCode = data.ResponseData.Carrier;
             this.carCode = this.carrierCode === 'R' ? 'F' : this.carrierCode;
             if (this.carCode === '' || this.carCode === undefined || this.carCode === null) {
-              this.loadingController.presentToast('Error', 'Invalid Packages');
-              this.clearTrack();
+              this.loadingController.presentToast('Warning', 'Invalid Packages');
+              this.carCode = '';
+              this.carrierCode = '';
             }
             this.loadingController.dismiss();
         },error=>{
+          console.log('CarrierError' + JSON.stringify(error))
           this.loadingController.dismiss();
-          this.loadingController.presentToast('Error', 'Invalid Packages.');
-          this.clearTrack();
+          this.loadingController.presentToast('Error', 'Something went wrong');
+          this.trackService.logError(JSON.stringify(error), 'fillCarrierCode');
+          this.carCode = '';
+          this.carrierCode = '';
         });
       
     }else{
-      this.clearTrack();
+      this.carCode = '';
+          this.carrierCode = '';
     }
     }
   }
@@ -233,7 +239,7 @@ export class HomePage implements OnInit {
       this.queryParam = new QueryParams();
  
       this.queryParam.TrackingNo = value.TrackingNo;
-      this.queryParam.Carrier = value.Carrier;
+      this.queryParam.Carrier = this.carrierCode;
       this.queryParam.Description = value.Description;
       this.queryParam.Residential = value.Res_Del;
       this.trackService.getTrackingDetails(this.queryParam);
@@ -245,6 +251,7 @@ export class HomePage implements OnInit {
   }
   clearTrack() { 
     this.carCode = '';
+    this.carrierCode = '';
     this.track_Form.reset(); }
   resInfoAlert() {
     this.loadingController.presentAlert('Info',

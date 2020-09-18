@@ -4,7 +4,7 @@ export const environment = {
   api_Url_Beta: 'http://10.1.10.46/smtrackingapi/api/',
   savePreferances:'SavePreferences',
   logErrorMessage: 'LogErrorMessage',
-  tncApi:'tracking/classifier',
+  tncApi:'Tracking/Classifier',
   saveConfiguration: 'SaveConfigure',
   saveDeviceID:'SaveGsmRegistration',
   trackingAPI:'Tracking?TrackingNo=@TrackingNo&Carrier=@Carrier&Description=@Description&Residential=@Residential&DeviceNo=@DeviceNo&AppUser=ShipMatrixApp&AppPwd=ShipMatrixApp&RegistrationId=@RegistrationId',

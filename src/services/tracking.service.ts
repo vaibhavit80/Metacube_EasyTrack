@@ -248,7 +248,7 @@ export class TrackingService {
     // Get TNC API
     TNCapi(trackingNo:string): Observable<any> {
       let request = {"TrackingNo":trackingNo};
-      return this.http.put(SessionData.apiURL + environment.tncApi , request, {
+      return this.http.post(SessionData.apiURL + environment.tncApi , request, {
         headers: new HttpHeaders()
         .set('Content-Type', 'application/json')
       });
