@@ -94,7 +94,7 @@ export class TrackingService {
           error => {
             this.loadingController.dismiss();
             this.loadingController.presentToast('error','Error while Tracking.');
-            this.logError('Error - ' + error, 'Tracking');
+            this.logError('Error - ' + JSON.stringify(error), 'Tracking');
           });
       } else {
         this.loadingController.presentToast('alert','Invalid Request');

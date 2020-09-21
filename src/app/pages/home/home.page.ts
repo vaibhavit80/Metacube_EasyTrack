@@ -78,8 +78,8 @@ export class HomePage implements OnInit {
 
           this.trackNo = barcodeData.text.replace('\u001d', '');
           this.trackNo = this.CorrectTrackingNo(this.trackNo);
-         
-          this.carCode = this.helper.GetCarrierCode(this.trackNo);
+          this.fillCarrierCode(this.trackNo);
+          
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(this.trackNo),
             Carrier: new FormControl(this.carCode),
@@ -209,22 +209,23 @@ export class HomePage implements OnInit {
         this.loadingController.present('Varifying Carrier.');
         this.trackService.TNCapi(formVal.TrackingNo).subscribe(
           data =>{
-            console.log('CarrierDetails' + JSON.stringify(data))
+           // console.log('CarrierDetails' + JSON.stringify(data))
             this.carrierCode = data.ResponseData.Carrier;
             this.carCode = this.carrierCode === 'R' ? 'F' : this.carrierCode;
-            if (this.carCode === '' || this.carCode === undefined || this.carCode === null) {
+            if ( this.carCode === null || this.carCode === 'null' || this.carCode === '' || this.carCode === undefined ) {
               this.loadingController.presentToast('Warning', 'Invalid Packages');
               this.carCode = '';
               this.carrierCode = '';
             }
             this.loadingController.dismiss();
         },error=>{
-          console.log('CarrierError' + JSON.stringify(error))
+          //console.log('CarrierError' + JSON.stringify(error));
+          this.carCode = '';
+          this.carrierCode = '';
           this.loadingController.dismiss();
           this.loadingController.presentToast('Error', 'Something went wrong');
           this.trackService.logError(JSON.stringify(error), 'fillCarrierCode');
-          this.carCode = '';
-          this.carrierCode = '';
+
         });
       
     }else{
