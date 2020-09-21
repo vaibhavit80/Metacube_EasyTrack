@@ -80,12 +80,7 @@ export class HomePage implements OnInit {
           this.trackNo = this.CorrectTrackingNo(this.trackNo);
           this.fillCarrierCode(this.trackNo);
 
-          this.track_Form = this.formBuilder.group({
-            TrackingNo: new FormControl(this.trackNo),
-            Carrier: new FormControl(this.carCode),
-            Description: new FormControl('', Validators.max(250)),
-            Res_Del: new FormControl(false)
-          });
+          
           //this.trackService.logError(JSON.stringify(barcodeData), 'Tracking No');
           // 
         } else {
@@ -147,7 +142,7 @@ export class HomePage implements OnInit {
   {
     if(trakNo.length > 3 && trakNo.substring(0,3).toLowerCase() === 'tba')
     {
-      this.loadingController.presentToast('Warning','Please track this package via your amazon account.');
+      this.loadingController.presentToast('Warning','Please track via amazon.');
       return false;
     }
     if(trakNo.length === 10 && /^[a-zA-Z]{5}/.test(trakNo))
@@ -206,7 +201,7 @@ export class HomePage implements OnInit {
       
       if(this.ValidateTrackNo(formVal.TrackingNo) === true && formVal.TrackingNo){
         // alert('1111');
-        this.loadingController.present('Varifying Carrier.');
+        this.loadingController.present('Verifying Carrier....');
         this.trackService.TNCapi(formVal.TrackingNo).subscribe(
           data =>{
            // console.log('CarrierDetails' + JSON.stringify(data))
@@ -216,14 +211,23 @@ export class HomePage implements OnInit {
               this.loadingController.presentToast('Warning', 'Invalid Packages');
               this.carCode = '';
               this.carrierCode = '';
-            }
+              this.loadingController.dismiss();
+            }else{
+            this.track_Form = this.formBuilder.group({
+              TrackingNo: new FormControl(this.trackNo),
+              Carrier: new FormControl(this.carCode),
+              Description: new FormControl('', Validators.max(250)),
+              Res_Del: new FormControl(false)
+            });
             this.loadingController.dismiss();
+          }
+           
         },error=>{
           //console.log('CarrierError' + JSON.stringify(error));
           this.carCode = '';
           this.carrierCode = '';
           this.loadingController.dismiss();
-          this.loadingController.presentToast('Error', 'Something went wrong');
+          this.loadingController.presentToast('Error', 'Unable to verify carrier.');
           this.trackService.logError(JSON.stringify(error), 'fillCarrierCode');
 
         });
