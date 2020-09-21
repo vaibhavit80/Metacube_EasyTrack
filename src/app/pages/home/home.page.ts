@@ -79,7 +79,7 @@ export class HomePage implements OnInit {
           this.trackNo = barcodeData.text.replace('\u001d', '');
           this.trackNo = this.CorrectTrackingNo(this.trackNo);
           this.fillCarrierCode(this.trackNo);
-          
+
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(this.trackNo),
             Carrier: new FormControl(this.carCode),
@@ -93,7 +93,7 @@ export class HomePage implements OnInit {
         }
 
         if (barcodeData.cancelled == true) {
-          this.carCode = this.helper.GetCarrierCode('');
+          this.carCode = '';
           this.track_Form = this.formBuilder.group({
             Res_Del: new FormControl(false)
           });
@@ -118,7 +118,7 @@ export class HomePage implements OnInit {
         if (result !== null) {
           alert(JSON.stringify(result));
           this.trackNo = result.text.replace('\u001d', '');
-          this.carCode = this.helper.GetCarrierCode(this.trackNo);
+          this.fillCarrierCode(this.trackNo);
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(this.trackNo),
             Carrier: new FormControl(this.carCode),
