@@ -68,7 +68,6 @@ export class AppComponent {
     private screenOrientation: ScreenOrientation
   ) {
     this.splashScreen.show();
-    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     this.initializeApp();
   }
 
@@ -87,7 +86,7 @@ export class AppComponent {
         this.navCtrl.navigateForward('/home');
       });
       if (this.platform.is('cordova')) {
-       
+        this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
       this.network.onDisconnect().subscribe(()=>
       {
         setTimeout(()=>

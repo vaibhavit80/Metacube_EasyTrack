@@ -78,7 +78,7 @@ export class HomePage implements OnInit {
 
           this.trackNo = barcodeData.text.replace('\u001d', '');
 
-          this.GetCarrierByTNC(this.trackNo),true;
+          this.GetCarrierByTNC(this.trackNo,true);
           //this.trackService.logError(JSON.stringify(barcodeData), 'Tracking No');
           // 
         } else {
