@@ -78,7 +78,7 @@ export class HomePage implements OnInit {
 
           this.trackNo = barcodeData.text.replace('\u001d', '');
 
-          this.GetCarrierByTNC(this.trackNo);
+          this.GetCarrierByTNC(this.trackNo),true;
           //this.trackService.logError(JSON.stringify(barcodeData), 'Tracking No');
           // 
         } else {
@@ -111,9 +111,7 @@ export class HomePage implements OnInit {
           this.GetCarrierByTNC(this.trackNo);
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(this.trackNo),
-            Carrier: new FormControl(this.carCode),
-            Description: new FormControl('', Validators.max(250)),
-            Res_Del: new FormControl(false)
+            Carrier: new FormControl(this.carCode)
           });
           this.trackService.logError(JSON.stringify(result), 'Tracking No');
           // 
@@ -175,9 +173,9 @@ export class HomePage implements OnInit {
   }
   fillCarrierCode(formVal) {
    
-this.GetCarrierByTNC(formVal.TrackingNo);
+this.GetCarrierByTNC(formVal.TrackingNo );
   }
-  GetCarrierByTNC(TrackingNo){
+  GetCarrierByTNC(TrackingNo, isScanned = false){
     if (TrackingNo === 'SHIPMATRIX') {
       this.navCtrl.navigateForward(`/url-changer`);
     } else {
@@ -193,17 +191,21 @@ this.GetCarrierByTNC(formVal.TrackingNo);
            // console.log('CarrierDetails' + JSON.stringify(data))
             this.carrierCode = data.ResponseData.Carrier;
             this.carCode = this.carrierCode === 'R' ? 'F' : this.carrierCode;
+            this.track_Form = this.formBuilder.group({
+              TrackingNo: new FormControl(TrackingNo),
+              Carrier: new FormControl(this.carCode)
+            });
+            this.loadingController.dismiss();
             if ( this.carCode === null || this.carCode === 'null' || this.carCode === '' || this.carCode === undefined ) {
               this.carCode = '';
               this.carrierCode = '';
               this.loadingController.presentToast('Error', 'Invalid Tracking No.');
             }
-            this.track_Form = this.formBuilder.group({
-              TrackingNo: new FormControl(TrackingNo),
-              Carrier: new FormControl(this.carCode),
-              Description: new FormControl('', Validators.max(250)),
-              Res_Del: new FormControl(false)
-            });
+            else{
+              if(isScanned === true){
+                this.doTrack(this.track_Form.value);
+              }
+            }
             this.loadingController.dismiss();
            
         },error=>{
@@ -212,9 +214,7 @@ this.GetCarrierByTNC(formVal.TrackingNo);
           this.carrierCode = '';
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(TrackingNo),
-            Carrier: new FormControl(this.carCode),
-            Description: new FormControl('', Validators.max(250)),
-            Res_Del: new FormControl(false)
+            Carrier: new FormControl(this.carCode)
           });
           this.loadingController.dismiss();
           this.loadingController.presentToast('Error', 'Unable to verify carrier.');
@@ -227,9 +227,7 @@ this.GetCarrierByTNC(formVal.TrackingNo);
       this.carrierCode = '';
       this.track_Form = this.formBuilder.group({
         TrackingNo: new FormControl(TrackingNo),
-        Carrier: new FormControl(this.carCode),
-        Description: new FormControl('', Validators.max(250)),
-        Res_Del: new FormControl(false)
+        Carrier: new FormControl(this.carCode)
       });
     }
     }
@@ -238,11 +236,10 @@ this.GetCarrierByTNC(formVal.TrackingNo);
     try {
       localStorage.setItem("intent", '');
       this.queryParam = new QueryParams();
- 
       this.queryParam.TrackingNo = value.TrackingNo;
       this.queryParam.Carrier = this.carrierCode;
-      this.queryParam.Description = value.Description;
-      this.queryParam.Residential = value.Res_Del;
+      this.queryParam.Description = '';
+      this.queryParam.Residential = 'true';
       this.trackService.getTrackingDetails(this.queryParam);
       
     } catch (Exception) {
@@ -255,9 +252,7 @@ this.GetCarrierByTNC(formVal.TrackingNo);
     this.carrierCode = '';
     this.track_Form = this.formBuilder.group({
       TrackingNo: new FormControl(''),
-      Carrier: new FormControl(''),
-      Description: new FormControl('', Validators.max(250)),
-      Res_Del: new FormControl(false)
+      Carrier: new FormControl('')
     });
     this.track_Form.reset(); }
   resInfoAlert() {

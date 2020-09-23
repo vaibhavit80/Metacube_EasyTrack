@@ -34,19 +34,6 @@
                 <ion-select-option value="O">OnTrac</ion-select-option>
             </ion-select>
         </ion-item>
-
-        <ion-item>
-
-            <!-- <ion-label>Description</ion-label> -->
-            <ion-textarea type="text" placeholder="Enter Description" formControlName="Description"></ion-textarea>
-
-        </ion-item>
-
-        <ion-item>
-            <ion-label style="z-index: 999999;">Residential Delivery</ion-label>
-            <ion-checkbox color="tertiary" formControlName="Res_Del"></ion-checkbox>
-            <ion-icon slot="end" style="z-index: 999999; cursor:pointer;height: 20px;" (click)="resInfoAlert()" color="primary" name="information-circle-outline"></ion-icon>
-        </ion-item>
         <ion-button class="submit-btn" color="tertiary" type="submit" expand="block" [disabled]="!track_Form.valid">Track</ion-button>
     </form>
     <app-help-fab></app-help-fab>

@@ -6,7 +6,7 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 import { Storage } from '@ionic/storage';
 import * as uuid from 'uuid';
 import { TrackingService } from 'src/services/tracking.service';
-
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { FcmService } from 'src/services/fcm.service';
 import { Network } from '@ionic-native/network/ngx';
 import { LoaderService } from './providers/loader.service';
@@ -64,10 +64,11 @@ export class AppComponent {
     private trackService: TrackingService,
     private fcm: FcmService,
     private network: Network,
-    private iab : InAppBrowser
+    private iab : InAppBrowser,
+    private screenOrientation: ScreenOrientation
   ) {
     this.splashScreen.show();
-  
+    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     this.initializeApp();
   }
 
