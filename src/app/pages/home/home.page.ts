@@ -77,10 +77,8 @@ export class HomePage implements OnInit {
           //alert(JSON.stringify(barcodeData));
 
           this.trackNo = barcodeData.text.replace('\u001d', '');
-          this.trackNo = this.CorrectTrackingNo(this.trackNo);
-          this.fillCarrierCode(this.trackNo);
 
-          
+          this.GetCarrierByTNC(this.trackNo);
           //this.trackService.logError(JSON.stringify(barcodeData), 'Tracking No');
           // 
         } else {
@@ -88,15 +86,12 @@ export class HomePage implements OnInit {
         }
 
         if (barcodeData.cancelled == true) {
-          this.carCode = '';
-          this.track_Form = this.formBuilder.group({
-            Res_Del: new FormControl(false)
-          });
+          this.clearTrack();
         }
 
       })
       .catch(error => {
-        this.fillCarrierCode('');
+        this.clearTrack();
         this.trackService.logError(JSON.stringify(error), 'barcode Scan issue');
         this.loadingController.presentToast('Error', 'Something went wrong');
       });
@@ -113,7 +108,7 @@ export class HomePage implements OnInit {
         if (result !== null) {
           alert(JSON.stringify(result));
           this.trackNo = result.text.replace('\u001d', '');
-          this.fillCarrierCode(this.trackNo);
+          this.GetCarrierByTNC(this.trackNo);
           this.track_Form = this.formBuilder.group({
             TrackingNo: new FormControl(this.trackNo),
             Carrier: new FormControl(this.carCode),
@@ -145,11 +140,7 @@ export class HomePage implements OnInit {
       this.loadingController.presentToast('Warning','Please track via amazon.');
       return false;
     }
-    if(trakNo.length === 10 && /^[a-zA-Z]{5}/.test(trakNo))
-    {
-      this.loadingController.presentToast('Warning','Invalid Tracking No');
-      return false;
-    }
+   
     return true;
   }
    help() {
@@ -166,23 +157,12 @@ export class HomePage implements OnInit {
       //alert(this.trackNo);
 
       this.trackNo = this.trackNo.replace('\u001d', '');
-      this.carCode = this.helper.GetCarrierCode(this.trackNo);
-      this.track_Form = this.formBuilder.group({
-        TrackingNo: new FormControl(this.trackNo),
-        Carrier: new FormControl(this.carCode),
-        Description: new FormControl('', Validators.max(250)),
-        Res_Del: new FormControl(false)
-      });
+      this.GetCarrierByTNC(this.trackNo);
       localStorage.setItem("intent", '');
       // alert('end' + this.trackNo);
     }
     else {
-      this.track_Form = this.formBuilder.group({
-        TrackingNo: new FormControl(''),
-        Carrier: new FormControl(''),
-        Description: new FormControl('', Validators.max(250)),
-        Res_Del: new FormControl(false)
-      });
+      this.clearTrack();
     }
   }
   ionViewWillEnter() {
@@ -195,37 +175,47 @@ export class HomePage implements OnInit {
   }
   fillCarrierCode(formVal) {
    
-    if (formVal.TrackingNo === 'SHIPMATRIX') {
+this.GetCarrierByTNC(formVal.TrackingNo);
+  }
+  GetCarrierByTNC(TrackingNo){
+    if (TrackingNo === 'SHIPMATRIX') {
       this.navCtrl.navigateForward(`/url-changer`);
     } else {
       
-      if(this.ValidateTrackNo(formVal.TrackingNo) === true && formVal.TrackingNo){
+    if(this.ValidateTrackNo(TrackingNo) === true && TrackingNo){
         // alert('1111');
         this.loadingController.present('Verifying Carrier....');
-        this.trackService.TNCapi(formVal.TrackingNo).subscribe(
+        TrackingNo = this.CorrectTrackingNo(TrackingNo);
+          
+       
+        this.trackService.TNCapi(TrackingNo).subscribe(
           data =>{
            // console.log('CarrierDetails' + JSON.stringify(data))
             this.carrierCode = data.ResponseData.Carrier;
             this.carCode = this.carrierCode === 'R' ? 'F' : this.carrierCode;
             if ( this.carCode === null || this.carCode === 'null' || this.carCode === '' || this.carCode === undefined ) {
-              this.loadingController.presentToast('Warning', 'Invalid Packages');
               this.carCode = '';
               this.carrierCode = '';
-              this.loadingController.dismiss();
-            }else{
+              this.loadingController.presentToast('Error', 'Invalid Tracking No.');
+            }
             this.track_Form = this.formBuilder.group({
-              TrackingNo: new FormControl(this.trackNo),
+              TrackingNo: new FormControl(TrackingNo),
               Carrier: new FormControl(this.carCode),
               Description: new FormControl('', Validators.max(250)),
               Res_Del: new FormControl(false)
             });
             this.loadingController.dismiss();
-          }
            
         },error=>{
           //console.log('CarrierError' + JSON.stringify(error));
           this.carCode = '';
           this.carrierCode = '';
+          this.track_Form = this.formBuilder.group({
+            TrackingNo: new FormControl(TrackingNo),
+            Carrier: new FormControl(this.carCode),
+            Description: new FormControl('', Validators.max(250)),
+            Res_Del: new FormControl(false)
+          });
           this.loadingController.dismiss();
           this.loadingController.presentToast('Error', 'Unable to verify carrier.');
           this.trackService.logError(JSON.stringify(error), 'fillCarrierCode');
@@ -234,7 +224,13 @@ export class HomePage implements OnInit {
       
     }else{
       this.carCode = '';
-          this.carrierCode = '';
+      this.carrierCode = '';
+      this.track_Form = this.formBuilder.group({
+        TrackingNo: new FormControl(TrackingNo),
+        Carrier: new FormControl(this.carCode),
+        Description: new FormControl('', Validators.max(250)),
+        Res_Del: new FormControl(false)
+      });
     }
     }
   }
@@ -257,6 +253,12 @@ export class HomePage implements OnInit {
   clearTrack() { 
     this.carCode = '';
     this.carrierCode = '';
+    this.track_Form = this.formBuilder.group({
+      TrackingNo: new FormControl(''),
+      Carrier: new FormControl(''),
+      Description: new FormControl('', Validators.max(250)),
+      Res_Del: new FormControl(false)
+    });
     this.track_Form.reset(); }
   resInfoAlert() {
     this.loadingController.presentAlert('Info',
