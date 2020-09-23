@@ -172,6 +172,7 @@ export class HomePage implements OnInit {
     if(this.trackNo === 'SHIPMATRIX'){
       this.fillIntentValue();
     }
+    this.clearTrack();
     this.setfilteringDatestoSession();
     localStorage.setItem("isScanned",'false');
   }
