@@ -165,15 +165,18 @@ export class HomePage implements OnInit {
   }
   ionViewWillEnter() {
     //this.fillIntentValue();
+    let isLastScanned = localStorage.getItem("isScanned");
+    if( isLastScanned === 'true'){
+      this.scanPGCode();
+    }
     if(this.trackNo === 'SHIPMATRIX'){
       this.fillIntentValue();
     }
     this.setfilteringDatestoSession();
-   
+    localStorage.setItem("isScanned",'false');
   }
   fillCarrierCode(formVal) {
-   
-this.GetCarrierByTNC(formVal.TrackingNo );
+    this.GetCarrierByTNC(formVal.TrackingNo );
   }
   GetCarrierByTNC(TrackingNo, isScanned = false){
     if (TrackingNo === 'SHIPMATRIX') {
@@ -203,7 +206,10 @@ this.GetCarrierByTNC(formVal.TrackingNo );
             }
             else{
               if(isScanned === true){
+                localStorage.setItem("isScanned", 'true');
                 this.doTrack(this.track_Form.value);
+              }else{
+                localStorage.setItem("isScanned", 'false');
               }
             }
             this.loadingController.dismiss();
