@@ -68,7 +68,8 @@ export class HomePage implements OnInit {
       showFlipCameraButton: true,
       showTorchButton: true,
       torchOn: false,
-      prompt: 'Place a barcode inside the scan area'
+      prompt: 'Place a barcode inside the scan area',
+      disableAnimations: true
     };
     this.barcodeScanner
       .scan(this.barcodeScannerOptions)
@@ -87,6 +88,7 @@ export class HomePage implements OnInit {
 
         if (barcodeData.cancelled == true) {
           this.clearTrack();
+          
         }
 
       })
@@ -172,7 +174,6 @@ export class HomePage implements OnInit {
     if(this.trackNo === 'SHIPMATRIX'){
       this.fillIntentValue();
     }
-    this.clearTrack();
     this.setfilteringDatestoSession();
     localStorage.setItem("isScanned",'false');
   }
