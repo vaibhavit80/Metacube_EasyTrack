@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TrackingService } from 'src/services/tracking.service';
-import { NavController, Platform } from '@ionic/angular';
+import { IonSelect, NavController, Platform } from '@ionic/angular';
 import { QueryParams } from 'src/app/models/QueryParams';
 import { ZBar, ZBarOptions } from '@ionic-native/zbar/ngx';
 import {
@@ -25,14 +25,15 @@ import { FcmService } from 'src/services/fcm.service';
 export class HomePage implements OnInit {
   track_Form: FormGroup;
   loaderToShow: any;
-  carCode: any = '';
   carrierCode: any = '';
   queryParam: QueryParams;
   encodeData: any;
   scannedData: {};
+  isCarrier = true;
   barcodeScannerOptions: BarcodeScannerOptions;
   trackNo: string = '';
-
+  @ViewChild('carrierList') carrierSelectRef: IonSelect;
+   
   // tslint:disable-next-line: max-line-length
   constructor(private route: ActivatedRoute, platform: Platform, private splashScreen: SplashScreen,
     private barcodeScanner: BarcodeScanner, private storage: Storage,private fcm: FcmService,
@@ -88,7 +89,6 @@ export class HomePage implements OnInit {
 
         if (barcodeData.cancelled == true) {
           this.clearTrack();
-          
         }
 
       })
@@ -112,8 +112,7 @@ export class HomePage implements OnInit {
           this.trackNo = result.text.replace('\u001d', '');
           this.GetCarrierByTNC(this.trackNo);
           this.track_Form = this.formBuilder.group({
-            TrackingNo: new FormControl(this.trackNo),
-            Carrier: new FormControl(this.carCode)
+            TrackingNo: new FormControl(this.trackNo)
           });
           this.trackService.logError(JSON.stringify(result), 'Tracking No');
           // 
@@ -167,6 +166,7 @@ export class HomePage implements OnInit {
   }
   ionViewWillEnter() {
     //this.fillIntentValue();
+    this.clearTrack();
     let isLastScanned = localStorage.getItem("isScanned");
     if( isLastScanned === 'true'){
       this.scanPGCode();
@@ -181,6 +181,7 @@ export class HomePage implements OnInit {
     this.GetCarrierByTNC(formVal.TrackingNo );
   }
   GetCarrierByTNC(TrackingNo, isScanned = false){
+    debugger;
     if (TrackingNo === 'SHIPMATRIX') {
       this.navCtrl.navigateForward(`/url-changer`);
     } else {
@@ -195,15 +196,12 @@ export class HomePage implements OnInit {
           data =>{
            // console.log('CarrierDetails' + JSON.stringify(data))
             this.carrierCode = data.ResponseData.Carrier;
-            this.carCode = this.carrierCode === 'R' ? 'F' : this.carrierCode;
+            //this.carrierSelectRef.value = this.carrierCode;
             this.track_Form = this.formBuilder.group({
-              TrackingNo: new FormControl(TrackingNo),
-              Carrier: new FormControl(this.carCode)
+              TrackingNo: new FormControl(TrackingNo)
             });
-            this.loadingController.dismiss();
-            if ( this.carCode === null || this.carCode === 'null' || this.carCode === '' || this.carCode === undefined ) {
-              this.carCode = '';
-              this.carrierCode = '';
+            
+            if ( this.carrierCode === null || this.carrierCode === 'null' || this.carrierCode === '' || this.carrierCode === undefined ) {
               this.loadingController.presentToast('Error', 'Invalid Tracking No.');
             }
             else{
@@ -217,12 +215,9 @@ export class HomePage implements OnInit {
             this.loadingController.dismiss();
            
         },error=>{
-          //console.log('CarrierError' + JSON.stringify(error));
-          this.carCode = '';
           this.carrierCode = '';
           this.track_Form = this.formBuilder.group({
-            TrackingNo: new FormControl(TrackingNo),
-            Carrier: new FormControl(this.carCode)
+            TrackingNo: new FormControl(TrackingNo)
           });
           this.loadingController.dismiss();
           this.loadingController.presentToast('Error', 'Unable to verify carrier.');
@@ -231,36 +226,40 @@ export class HomePage implements OnInit {
         });
       
     }else{
-      this.carCode = '';
       this.carrierCode = '';
       this.track_Form = this.formBuilder.group({
-        TrackingNo: new FormControl(TrackingNo),
-        Carrier: new FormControl(this.carCode)
+        TrackingNo: new FormControl(TrackingNo)
       });
     }
     }
   }
   doTrack(value) {
     try {
+      debugger;
+      if ( this.carrierSelectRef.value !== '' && this.carrierSelectRef.value !== null && this.carrierSelectRef.value !== 'null' &&  this.carrierSelectRef.value !== undefined ) {
+        this.carrierCode = this.carrierSelectRef.value;
+      }
+      if ( this.carrierCode === '' || this.carrierCode === null || this.carrierCode === 'null' ||  this.carrierCode === undefined ) {
+        this.carrierSelectRef.open();
+      }else{
       localStorage.setItem("intent", '');
+      //this.carrierCode = this.carrierSelectRef.value
       this.queryParam = new QueryParams();
       this.queryParam.TrackingNo = value.TrackingNo;
       this.queryParam.Carrier = this.carrierCode;
       this.queryParam.Description = '';
       this.queryParam.Residential = 'true';
       this.trackService.getTrackingDetails(this.queryParam);
-      
+      }
     } catch (Exception) {
       this.trackService.logError(JSON.stringify(Exception), 'doTrack-home');
       this.loadingController.presentToast('Error', JSON.stringify(Exception));
     }
   }
   clearTrack() { 
-    this.carCode = '';
     this.carrierCode = '';
     this.track_Form = this.formBuilder.group({
-      TrackingNo: new FormControl(''),
-      Carrier: new FormControl('')
+      TrackingNo: new FormControl('')
     });
     this.track_Form.reset(); }
   resInfoAlert() {
@@ -277,13 +276,6 @@ export class HomePage implements OnInit {
     let dateoflastweek = moment(_filteringDates.ThisWeek.firstDate).subtract(1, 'days').toDate();
     _filteringDates.LastWeek = this.trackService.getFirstLastDayOfWeek(dateoflastweek);
     SessionData.filteringDates = _filteringDates;
-    // this.storage.get('_activePackages').then(tData => {
-    //   if (tData == null) {tData = []; return; }
-    //   this.trackService.setPackagestoSession(tData);
-    // });
-    // this.storage.get('_archivePackages').then(aData => {
-    //   if (aData == null) {aData = []; return; }
-    //   this.trackService.setarchivePackagestoSession(aData);
-    // });
+  
   }
 }
