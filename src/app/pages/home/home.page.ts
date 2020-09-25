@@ -236,7 +236,7 @@ export class HomePage implements OnInit {
   doTrack(value) {
     try {
       debugger;
-      if ( this.carrierSelectRef.value !== '' && this.carrierSelectRef.value !== null && this.carrierSelectRef.value !== 'null' &&  this.carrierSelectRef.value !== undefined ) {
+      if ( (this.carrierCode === '' || this.carrierCode === null || this.carrierCode === 'null' ||  this.carrierCode === undefined) && (this.carrierSelectRef.value !== '' && this.carrierSelectRef.value !== null && this.carrierSelectRef.value !== 'null' &&  this.carrierSelectRef.value !== undefined) ) {
         this.carrierCode = this.carrierSelectRef.value;
       }
       if ( this.carrierCode === '' || this.carrierCode === null || this.carrierCode === 'null' ||  this.carrierCode === undefined ) {
@@ -249,6 +249,7 @@ export class HomePage implements OnInit {
       this.queryParam.Carrier = this.carrierCode;
       this.queryParam.Description = '';
       this.queryParam.Residential = 'true';
+      this.carrierCode = '';
       this.trackService.getTrackingDetails(this.queryParam);
       }
     } catch (Exception) {
