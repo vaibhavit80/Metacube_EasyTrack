@@ -15,7 +15,7 @@
 <ion-content padding>
     <form *ngIf="track_Form" [formGroup]="track_Form" (submit)="fillCarrierCode(track_Form.value)">
 
-            <ion-button (click)="scanPGCode()" style="width: 100%;" color="tertiary">
+            <ion-button (click)="scanPGCode()" class="submit-btn" expand="block" style="height:50px ; " color="tertiary">
                 <ion-icon  name="barcode"></ion-icon>  Scan Barcode
             </ion-button>
         <ion-item>
@@ -25,7 +25,7 @@
             <!-- <ion-buttons color="light" clear slot="end"><ion-button  color="light"  > <ion-icon (click)="scanCode()" color="tertiary" name="barcode"></ion-icon></ion-button></ion-buttons> -->
         </ion-item>
 
-        <ion-button class="submit-btn" color="tertiary" type="submit" expand="block" [disabled]="!track_Form.valid">Track</ion-button>
+        <ion-button class="submit-btn" color="tertiary" type="submit" style="height: 40px;" expand="block" [disabled]="!track_Form.valid">Track</ion-button>
         <ion-select [hidden]="isCarrier" #carrierList okText="Okay" (ionChange)="doTrack(track_Form.value)" cancelText="Dismiss">
             <ion-select-option value="U">UPS</ion-select-option>
             <ion-select-option value="S">USPS</ion-select-option>
@@ -39,36 +39,36 @@
     <ion-grid>
         <ion-row>
           <ion-col>
-            <img src="../../../assets/logos/UPS-Logo.png">
+            <img width="50px" height="56px" src="../../../assets/logos/UPS-Logo.png">
           </ion-col>
         </ion-row>
         <ion-row>
             <ion-col>
-                <img src="../../../assets/logos/FedEx-Logo.png">
+                <img width="105px" height="24px" src="../../../assets/logos/FedEx-Logo.png">
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col>
-                <img src="../../../assets/logos/USPS-Logo.png">
+                <img width="85px" height="55px" src="../../../assets/logos/USPS-Logo.png">
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col>
-                <img src="../../../assets/logos/Purolator-Logo.png">
+                <img width="100px" height="17px" src="../../../assets/logos/Purolator-Logo.png">
             </ion-col>
             <ion-col>
-                <img src="../../../assets/logos/DHL-Logo.png">
+                <img width="75px" height="29px" src="../../../assets/logos/DHL-Logo.png">
               </ion-col>
           </ion-row>
         <ion-row>
           <ion-col>
-            <img src="../../../assets/logos/Canpar-Logo.png">
+            <img width="99px" height="25px" src="../../../assets/logos/Canpar-Logo.png">
           </ion-col>
           <ion-col>
-            <img src="../../../assets/logos/Ontrac-Logo.png">
+            <img width="71px" height="35px" src="../../../assets/logos/Ontrac-Logo.png">
           </ion-col>
           <ion-col>
-            <img src="../../../assets/logos/LSO-Logo.png">
+            <img width="90px" height="31px" src="../../../assets/logos/LSO-Logo.png">
           </ion-col>
         </ion-row>
       </ion-grid>
