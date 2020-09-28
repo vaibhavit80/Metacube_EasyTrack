@@ -13,14 +13,14 @@
 </ion-header>
 
 <ion-content padding>
-    <form *ngIf="track_Form" [formGroup]="track_Form" (submit)="doTrack(track_Form.value)">
+    <form *ngIf="track_Form" [formGroup]="track_Form" (submit)="fillCarrierCode(track_Form.value)">
 
             <ion-button (click)="scanPGCode()" style="width: 100%;" color="tertiary">
                 <ion-icon  name="barcode"></ion-icon>  Scan Barcode
             </ion-button>
         <ion-item>
             <!-- <ion-label>Tracking#</ion-label> -->
-            <ion-input type="text" placeholder="Enter Tracking #" (input)="onSearchChange($event.target.value)" (ionBlur)="fillCarrierCode(track_Form.value)" formControlName="TrackingNo" required></ion-input>
+            <ion-input type="text" placeholder="Enter Tracking #" (input)="onSearchChange($event.target.value)" formControlName="TrackingNo" required></ion-input>
           
             <!-- <ion-buttons color="light" clear slot="end"><ion-button  color="light"  > <ion-icon (click)="scanCode()" color="tertiary" name="barcode"></ion-icon></ion-button></ion-buttons> -->
         </ion-item>

@@ -202,15 +202,15 @@ export class HomePage implements OnInit {
             });
             
             if ( this.carrierCode === null || this.carrierCode === 'null' || this.carrierCode === '' || this.carrierCode === undefined ) {
-              this.loadingController.presentToast('Error', 'Invalid Tracking No.');
+                this.carrierSelectRef.open();
             }
             else{
               if(isScanned === true){
                 localStorage.setItem("isScanned", 'true');
-                this.doTrack(this.track_Form.value);
               }else{
                 localStorage.setItem("isScanned", 'false');
               }
+              this.doTrack(this.track_Form.value , this.carrierCode);
             }
             this.loadingController.dismiss();
            
@@ -220,6 +220,7 @@ export class HomePage implements OnInit {
             TrackingNo: new FormControl(TrackingNo)
           });
           this.loadingController.dismiss();
+          this.carrierSelectRef.open();
           this.loadingController.presentToast('Error', 'Unable to verify carrier.');
           this.trackService.logError(JSON.stringify(error), 'fillCarrierCode');
 
@@ -233,17 +234,11 @@ export class HomePage implements OnInit {
     }
     }
   }
-  doTrack(value) {
+  doTrack(value,ccode = "NA") {
     try {
       debugger;
-      if ( (this.carrierCode === '' || this.carrierCode === null || this.carrierCode === 'null' ||  this.carrierCode === undefined) && (this.carrierSelectRef.value !== '' && this.carrierSelectRef.value !== null && this.carrierSelectRef.value !== 'null' &&  this.carrierSelectRef.value !== undefined) ) {
-        this.carrierCode = this.carrierSelectRef.value;
-      }
-      if ( this.carrierCode === '' || this.carrierCode === null || this.carrierCode === 'null' ||  this.carrierCode === undefined ) {
-        this.carrierSelectRef.open();
-      }else{
       localStorage.setItem("intent", '');
-      //this.carrierCode = this.carrierSelectRef.value
+      this.carrierCode = ccode == "NA"? this.carrierSelectRef.value : ccode;
       this.queryParam = new QueryParams();
       this.queryParam.TrackingNo = value.TrackingNo;
       this.queryParam.Carrier = this.carrierCode;
@@ -251,7 +246,6 @@ export class HomePage implements OnInit {
       this.queryParam.Residential = 'true';
       this.carrierCode = '';
       this.trackService.getTrackingDetails(this.queryParam);
-      }
     } catch (Exception) {
       this.trackService.logError(JSON.stringify(Exception), 'doTrack-home');
       this.loadingController.presentToast('Error', JSON.stringify(Exception));
