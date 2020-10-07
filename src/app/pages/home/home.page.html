@@ -27,13 +27,14 @@
 
         <ion-button class="submit-btn" color="tertiary" type="submit" style="height: 40px;" expand="block" [disabled]="!track_Form.valid">Track</ion-button>
         <ion-select [hidden]="isCarrier" #carrierList okText="Okay" (ionChange)="doTrack(track_Form.value)" cancelText="Dismiss">
-            <ion-select-option value="U">UPS</ion-select-option>
-            <ion-select-option value="S">USPS</ion-select-option>
-            <ion-select-option value="D">DHL</ion-select-option>
-            <ion-select-option value="M">DHLGM</ion-select-option>
-            <ion-select-option value="F">FedEx </ion-select-option>
-            <ion-select-option value="P">Purolator</ion-select-option>
-            <ion-select-option value="O">OnTrac</ion-select-option>
+           <ion-select-option value="U">UPS</ion-select-option>
+      <ion-select-option value="S">USPS</ion-select-option>
+      <ion-select-option value="F">FedEx </ion-select-option>
+      <ion-select-option value="D">DHL</ion-select-option>
+      <ion-select-option value="P">Purolator</ion-select-option>
+      <ion-select-option value="O">OnTrac</ion-select-option>
+      <ion-select-option value="C">Canpar</ion-select-option>
+      <ion-select-option value="L">LSO</ion-select-option>
         </ion-select>
     </form>
     <ion-grid>

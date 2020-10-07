@@ -71,6 +71,7 @@ export class TrackingService {
             // Tracking Response
             this.storage.get('_activePackages').then(tData => {
                 if (tData == null) {tData = []; }
+                localStorage.setItem("SCAC","");
                 // tslint:disable-next-line: max-line-length
                 const index = tData.findIndex(item => item.trackingNo === queryParam.TrackingNo.trim() + '-' + queryParam.Carrier.trim());
                 if (index >= 0) {tData.splice(index, 1); }
@@ -267,11 +268,45 @@ export class TrackingService {
       .set('Content-Type', 'application/json')
     });
   }
- /// track package
-private trackPackages(_queryParam: QueryParams): Observable<any> {
-
-  let trackingAPI = environment.trackingAPI;
+  /// track package
+  private trackPackages(_queryParam: QueryParams): Observable<any> {
+    try {
+    let trackingAPI = environment.trackingAPI;
+    let SCAC = localStorage.getItem("SCAC");
+    if ( SCAC === null || SCAC === 'null' || SCAC === '' || SCAC === undefined ) {
+      switch(_queryParam.Carrier)
+      {
+        case "C":
+        SCAC = "CNPR";
+        _queryParam.Carrier = "X";
+        break;
+        case "L":
+        SCAC = "LSOM";
+        _queryParam.Carrier = "X";
+        break;
+        case "U":
+          SCAC = "UPSN";
+          break;
+        case "S":
+          SCAC = "USPS";
+          break;
+        case "F":
+          SCAC = "FDE";
+          break;
+        case "D":
+          SCAC = "DHL";
+          break;
+        case "P":
+        SCAC = "PLTR";
+        break;
+        case "O":
+        SCAC = "ONTR";
+        break;
+      }
+    }
+   
   trackingAPI = trackingAPI.replace("@TrackingNo", _queryParam.TrackingNo);
+    trackingAPI = trackingAPI.replace("@SCAC", SCAC);
   trackingAPI = trackingAPI.replace("@Carrier", _queryParam.Carrier);
   trackingAPI = trackingAPI.replace("@Residential", _queryParam.Residential === null || _queryParam.Residential === '' || _queryParam.Residential === undefined ? 'false' : _queryParam.Residential );
   trackingAPI = trackingAPI.replace("@Description", _queryParam.Description === null || _queryParam.Description === undefined ? '' : _queryParam.Description );
@@ -281,6 +316,11 @@ private trackPackages(_queryParam: QueryParams): Observable<any> {
     headers: new HttpHeaders()
     .set('Content-Type', 'application/json')
   });
+  }
+  catch (exc) {
+    this.loadingController.presentToast('dark', 'Error: ' + exc);
+    return null;
+  }
 }
 /// set active package data in sessions
   setPackagestoSession(tData: any) {

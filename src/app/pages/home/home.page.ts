@@ -28,6 +28,7 @@ export class HomePage implements OnInit {
   carrierCode: any = '';
   queryParam: QueryParams;
   encodeData: any;
+  SCAC: any = '';
   scannedData: {};
   isCarrier = true;
   barcodeScannerOptions: BarcodeScannerOptions;
@@ -200,9 +201,11 @@ export class HomePage implements OnInit {
             this.track_Form = this.formBuilder.group({
               TrackingNo: new FormControl(TrackingNo)
             });
-            
+             this.SCAC = data.ResponseData.SCAC;
+            localStorage.setItem("SCAC", this.SCAC);
             if ( this.carrierCode === null || this.carrierCode === 'null' || this.carrierCode === '' || this.carrierCode === undefined ) {
-                this.carrierSelectRef.open();
+              localStorage.setItem("SCAC", '');
+              this.carrierSelectRef.open();
             }
             else{
               if(isScanned === true){
@@ -253,6 +256,7 @@ export class HomePage implements OnInit {
   }
   clearTrack() { 
     this.carrierCode = '';
+    localStorage.setItem("SCAC", '');
     this.track_Form = this.formBuilder.group({
       TrackingNo: new FormControl('')
     });
